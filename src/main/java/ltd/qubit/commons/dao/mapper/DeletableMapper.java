@@ -18,9 +18,9 @@ import ltd.qubit.commons.model.Identifiable;
 
 /**
  * This interface represents a MyBatis Mapper that implements mark deletion
- * options.
- *
- * <p>This interface implements the following Mapper operations:</p>
+ * operations.
+ * <p>
+ * This interface implements the following Mapper operations:
  * <ul>
  * <li>{@link #existNonDeleted(Long)}: Tests whether there exists the entity
  * with the specified ID that has not been marked as deleted.</li>
