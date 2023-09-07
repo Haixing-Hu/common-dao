@@ -23,7 +23,7 @@ import ltd.qubit.commons.error.NullFieldException;
  * <p>
  * This interface implements the following Mapper operations:
  * <ul>
- * <li>{@link #add(T)}</li>
+ * <li>{@link #add(T)}: Adds a new entity.</li>
  * </ul>
  *
  * @param <T>
@@ -33,7 +33,7 @@ import ltd.qubit.commons.error.NullFieldException;
 public interface AddableMapper<T> extends Mapper<T> {
 
   /**
-   * Add a new entity.
+   * Adds a new entity.
    *
    * @param entity
    *     The entity object to be added.
