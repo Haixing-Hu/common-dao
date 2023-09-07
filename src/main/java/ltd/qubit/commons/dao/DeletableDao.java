@@ -27,8 +27,8 @@ import static ltd.qubit.commons.dao.DaoImplHelper.restoreByKeyImpl;
 /**
  * This interface represents a DAO that implements mark deletion operations on
  * entities.
- *
- * <p>This interface implements the following DAO operations:</p>
+ * <p>
+ * This interface implements the following DAO operations:
  * <ul>
  * <li>{@link #existNonDeleted(Long)}: Tests whether there exists the entity
  * with the specified ID that has not been marked as deleted.</li>
