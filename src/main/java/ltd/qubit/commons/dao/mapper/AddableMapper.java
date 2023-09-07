@@ -36,9 +36,9 @@ public interface AddableMapper<T> extends Mapper<T> {
    * Adds a new entity.
    *
    * @param entity
-   *     The entity object to be added.
+   *     The entity to be added.
    * @return
-   *     The number of objects added by this operation.
+   *     The number of entities added by this operation.
    * @throws NullFieldException
    *     If the database field corresponding to an attribute of the entity
    *     should not be empty but its attribute value is empty.

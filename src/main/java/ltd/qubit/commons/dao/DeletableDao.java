@@ -30,10 +30,14 @@ import static ltd.qubit.commons.dao.DaoImplHelper.restoreByKeyImpl;
  *
  * <p>This interface implements the following DAO operations:</p>
  * <ul>
- * <li>{@link #delete(Long)}</li>
- * <li>{@link #restore(Long)}</li>
- * <li>{@link #purge(Long)}</li>
- * <li>{@link #purgeAll()}</li>
+ * <li>{@link #existNonDeleted(Long)}: Tests whether there exists the entity
+ * with the specified ID that has not been marked as deleted.</li>
+ * <li>{@link #delete(Long)}: Marks the specified entity as deleted.</li>
+ * <li>{@link #restore(Long)}: Restores the specified mark deleted entity.</li>
+ * <li>{@link #purge(Long)}: Completely removes the specified mark deleted
+ * entity from the database.</li>
+ * <li>{@link #purgeAll()}: Completely removes <b>all</b> mark deleted entities
+ * from the database</li>
  * </ul>
  *
  * @param <T>
@@ -72,7 +76,7 @@ public interface DeletableDao<T extends Identifiable & Deletable> extends Dao<T>
    * @param id
    *     The ID of the entity to be marked as deleted.
    * @return
-   *     The timestamp when the data was marked.
+   *     The timestamp when the entity was marked.
    * @throws DataNotExistException
    *     If the specified entity does not exist or has already been marked as
    *     deleted.
@@ -115,7 +119,7 @@ public interface DeletableDao<T extends Identifiable & Deletable> extends Dao<T>
   }
 
   /**
-   * Completely removes the specified mark deleted entity.
+   * Completely removes the specified mark deleted entity from the database.
    *
    * <p><b>Note: </b>This operation will completely remove the mark deleted
    * entities from the database. The removed entity cannot be restored.
@@ -138,7 +142,7 @@ public interface DeletableDao<T extends Identifiable & Deletable> extends Dao<T>
   }
 
   /**
-   * Completely removes <b>all</b> mark deleted entities.
+   * Completely removes <b>all</b> mark deleted entities from the database.
    *
    * <p><b>Note: </b>This operation will completely remove <b>all</b> mark
    * deleted entities from the database. The removed entities cannot be restored.
