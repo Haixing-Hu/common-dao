@@ -37,7 +37,8 @@ import static ltd.qubit.commons.dao.DaoImplHelper.restoreByKeyImpl;
  * </ul>
  *
  * @param <T>
- *     The type of entity being manipulated.
+ *     The type of entities being operated on, which must implement the
+ *     {@link Identifiable} and {@link Deletable} interface.
  * @author Haixing Hu
  */
 public interface DeletableDao<T extends Identifiable & Deletable> extends Dao<T> {
@@ -85,7 +86,7 @@ public interface DeletableDao<T extends Identifiable & Deletable> extends Dao<T>
    */
   @Modified("deleteTime")
   default Instant delete(final Long id) throws DataAccessException {
-    return deleteByKeyImpl(this, t -> getMapper().delete(id, t), "id", id);
+    return deleteByKeyImpl(this, (t) -> getMapper().delete(id, t), "id", id);
   }
 
   /**
@@ -110,7 +111,7 @@ public interface DeletableDao<T extends Identifiable & Deletable> extends Dao<T>
    */
   @Modified("deleteTime")
   default void restore(final Long id) throws DataAccessException {
-    restoreByKeyImpl(this, t -> getMapper().restore(id), "id", id);
+    restoreByKeyImpl(this, (t) -> getMapper().restore(id), "id", id);
   }
 
   /**
@@ -133,7 +134,7 @@ public interface DeletableDao<T extends Identifiable & Deletable> extends Dao<T>
    * @see ClearableDao#clear()
    */
   default void purge(final Long id) throws DataAccessException {
-    purgeByKeyImpl(this, t -> getMapper().purge(id), "id", id);
+    purgeByKeyImpl(this, (t) -> getMapper().purge(id), "id", id);
   }
 
   /**
