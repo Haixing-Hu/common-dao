@@ -28,7 +28,7 @@ import static ltd.qubit.commons.dao.DaoImplHelper.addImpl;
  * <p>
  * This interface implements the following DAO operations:
  * <ul>
- * <li>{@link #add(T)}</li>
+ * <li>{@link #add(T)}: Adds a new entity.</li>
  * </ul>
  *
  * @param <T>
@@ -41,7 +41,7 @@ public interface AddableDao<T> extends Dao<T> {
   AddableMapper<T> getMapper();
 
   /**
-   * Add a new entity.
+   * Adds a new entity.
    *
    * @param obj
    *     The entity object to be added.

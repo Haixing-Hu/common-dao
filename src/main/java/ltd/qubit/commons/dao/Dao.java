@@ -14,7 +14,7 @@ import ltd.qubit.commons.model.HasClock;
 import ltd.qubit.commons.model.HasLogger;
 
 /**
- * Common root interface for all DAO interfaces.
+ * The base interface for all DAO interfaces.
  *
  * @param <T>
  *     The type of entity accessed by this DAO.
