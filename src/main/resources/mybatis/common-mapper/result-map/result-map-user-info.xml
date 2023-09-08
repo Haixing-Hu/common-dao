@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.mapper">
+
+  <resultMap id="UserInfoResultMap" type="ltd.qubit.model.person.UserInfo">
+    <id property="id"                       column="id"/>
+    <result property="username"             column="username"/>
+    <result property="name"                 column="name"/>
+    <result property="nickname"             column="nickname"/>
+    <result property="gender"               column="gender"/>
+    <result property="avatar"               column="avatar"/>
+    <result property="mobile"               column="mobile"/>
+    <result property="email"                column="email"/>
+    <result property="state"                column="state"/>
+    <result property="deleteTime"           column="delete_time"/>
+  </resultMap>
+
+</mapper>

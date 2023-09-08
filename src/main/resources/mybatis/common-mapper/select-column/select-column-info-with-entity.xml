@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.mapper">
+
+  <sql id="selectColumnInfoWithEntity">
+    ${alias}.`${columnPrefix}id`                AS `${asPrefix}id`,
+    ${alias}.`${columnPrefix}code`              AS `${asPrefix}code`,
+    ${alias}.`${columnPrefix}name`              AS `${asPrefix}name`,
+    ${alias}.`${columnPrefix}entity`            AS `${asPrefix}entity`,
+    ${alias}.`${columnPrefix}delete_time`       AS `${asPrefix}delete_time`,
+  </sql>
+</mapper>

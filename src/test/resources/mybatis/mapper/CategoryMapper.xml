@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.testbed.mapper.CategoryMapper">
+
+  <resultMap id="CategoryResultMap" type="ltd.qubit.model.commons.Category">
+    <id property="id"                   column="id"/>
+    <result property="entity"           column="entity"/>
+    <result property="code"             column="code"/>
+    <result property="name"             column="name"/>
+    <result property="title"            column="title"/>
+    <result property="icon"             column="icon"/>
+    <result property="description"      column="description"/>
+    <result property="parent.id"        column="parent_id"/>
+    <result property="parent.entity"    column="parent_entity"/>
+    <result property="parent.code"      column="parent_code"/>
+    <result property="parent.name"      column="parent_name"/>
+    <result property="predefined"       column="predefined"/>
+    <result property="createTime"       column="create_time"/>
+    <result property="modifyTime"       column="modify_time"/>
+    <result property="deleteTime"       column="delete_time"/>
+  </resultMap>
+
+  <sql id="selectCategory">
+    SELECT  c.`id`                AS `id`,
+            c.`entity`            AS `entity`,
+            c.`code`              AS `code`,
+            c.`name`              AS `name`,
+            c.`title`             AS `title`,
+            c.`icon`              AS `icon`,
+            c.`description`       AS `description`,
+            p.`id`                AS `parent_id`,
+            p.`entity`            AS `parent_entity`,
+            p.`code`              AS `parent_code`,
+            p.`name`              AS `parent_name`,
+            c.`predefined`        AS `predefined`,
+            c.`create_time`       AS `create_time`,
+            c.`modify_time`       AS `modify_time`,
+            c.`delete_time`       AS `delete_time`
+    FROM `category` AS c
+    LEFT JOIN `category` AS p ON p.`id` = c.`parent_id`
+  </sql>
+
+  <select id="count" parameterType="map"
+    resultType="long" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.count">
+      <property name="table"  value="category"/>
+      <property name="alias"  value="c"/>
+      <property name="sql"    value="selectCategory"/>
+    </include>
+  </select>
+
+  <select id="list" parameterType="map"
+    resultMap="CategoryResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.list">
+      <property name="sql"    value="selectCategory"/>
+      <property name="alias"  value="c"/>
+    </include>
+  </select>
+
+  <select id="exist" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.exist">
+      <property name="table" value="category"/>
+    </include>
+  </select>
+
+  <select id="existNonDeleted" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.existNonDeleted">
+      <property name="table" value="category"/>
+    </include>
+  </select>
+
+  <select id="existCode" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.existCode">
+      <property name="table" value="category"/>
+    </include>
+  </select>
+
+  <select id="existName" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.existEntityName">
+      <property name="table" value="category"/>
+    </include>
+  </select>
+
+  <select id="get" parameterType="map"
+    resultMap="CategoryResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.get">
+      <property name="sql" value="selectCategory"/>
+      <property name="alias" value="c"/>
+    </include>
+  </select>
+
+  <select id="getByCode" parameterType="map"
+    resultMap="CategoryResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getByCode">
+      <property name="sql" value="selectCategory"/>
+      <property name="alias" value="c"/>
+    </include>
+  </select>
+
+  <select id="getByName" parameterType="map"
+    resultMap="CategoryResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getByEntityName">
+      <property name="sql" value="selectCategory"/>
+      <property name="alias" value="c"/>
+    </include>
+  </select>
+
+  <select id="getInfo" parameterType="map"
+    resultMap="ltd.qubit.commons.dao.mapper.InfoWithEntityResultMap"
+    resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getInfoWithEntity">
+      <property name="table" value="category"/>
+    </include>
+  </select>
+
+  <select id="getInfoByCode" parameterType="map"
+    resultMap="ltd.qubit.commons.dao.mapper.InfoWithEntityResultMap"
+    resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getInfoWithEntityByCode">
+      <property name="table" value="category"/>
+    </include>
+  </select>
+
+  <select id="getInfoByName" parameterType="map"
+    resultMap="ltd.qubit.commons.dao.mapper.InfoWithEntityResultMap"
+    resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getInfoWithEntityByEntityName">
+      <property name="table" value="category"/>
+    </include>
+  </select>
+
+  <select id="getIdByCode" parameterType="map"
+    resultType="Long" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getIdByCode">
+      <property name="table" value="category"/>
+    </include>
+  </select>
+
+  <select id="getIdByName" parameterType="map"
+    resultType="Long" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getIdByEntityName">
+      <property name="table" value="category"/>
+    </include>
+  </select>
+
+  <insert id="add" parameterType="ltd.qubit.model.commons.Category">
+    INSERT INTO `category` (
+        `id`,
+        `entity`,
+        `code`,
+        `name`,
+        `title`,
+        `icon`,
+        `description`,
+        `parent_id`,
+        `predefined`,
+        `create_time`
+    ) VALUES (
+        #{id},
+        #{entity},
+        #{code},
+        #{name},
+        #{title},
+        #{icon},
+        #{description},
+        #{parent.id},
+        #{predefined},
+        #{createTime}
+    )
+  </insert>
+
+  <sql id="updateCategory">
+    UPDATE `category`
+    SET   `name`          = #{name},
+          `parent_id`     = #{parent.id},
+          `title`         = #{title},
+          `icon`          = #{icon},
+          `description`   = #{description},
+          `predefined`    = #{predefined},
+          `modify_time`   = #{modifyTime}
+  </sql>
+
+  <update id="update" parameterType="ltd.qubit.model.commons.Category">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeleted">
+      <property name="sql" value="updateCategory"/>
+    </include>
+  </update>
+
+  <update id="updateByCode" parameterType="ltd.qubit.model.commons.Category">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedByCode">
+      <property name="sql" value="updateCategory"/>
+    </include>
+  </update>
+
+  <update id="updateByName" parameterType="ltd.qubit.model.commons.Category">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedByEntityName">
+      <property name="sql" value="updateCategory"/>
+    </include>
+  </update>
+
+  <update id="delete" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.delete">
+      <property name="table" value="category"/>
+    </include>
+  </update>
+
+  <update id="deleteByCode" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.deleteByCode">
+      <property name="table" value="category"/>
+    </include>
+  </update>
+
+  <update id="deleteByName" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.deleteByEntityName">
+      <property name="table" value="category"/>
+    </include>
+  </update>
+
+  <update id="restore" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.restore">
+      <property name="table" value="category"/>
+    </include>
+  </update>
+
+  <update id="restoreByCode" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.restoreByCode">
+      <property name="table" value="category"/>
+    </include>
+  </update>
+
+  <update id="restoreByName" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.restoreByEntityName">
+      <property name="table" value="category"/>
+    </include>
+  </update>
+
+  <delete id="purge" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.purge">
+      <property name="table" value="category"/>
+    </include>
+  </delete>
+
+  <delete id="purgeByCode" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.purgeByCode">
+      <property name="table" value="category"/>
+    </include>
+  </delete>
+
+  <delete id="purgeByName" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.purgeByEntityName">
+      <property name="table" value="category"/>
+    </include>
+  </delete>
+
+  <delete id="purgeAll">
+    <include refid="ltd.qubit.commons.dao.mapper.purgeAll">
+      <property name="table" value="category"/>
+    </include>
+  </delete>
+
+  <update id="erase" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.erase">
+      <property name="table" value="category"/>
+    </include>
+  </update>
+
+  <update id="eraseByCode" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.eraseByCode">
+      <property name="table" value="category"/>
+    </include>
+  </update>
+
+  <update id="eraseByName" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.eraseByEntityName">
+      <property name="table" value="category"/>
+    </include>
+  </update>
+
+  <delete id="clear">
+    <include refid="ltd.qubit.commons.dao.mapper.clear">
+      <property name="table" value="category"/>
+    </include>
+  </delete>
+</mapper>

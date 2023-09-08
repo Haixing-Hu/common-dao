@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.testbed.mapper.UserMapper">
+
+  <resultMap id="UserResultMap" type="ltd.qubit.model.person.User">
+    <id property="id"                       column="id"/>
+    <result property="username"             column="username"/>
+    <result property="password"             column="password"/>
+    <result property="name"                 column="name"/>
+    <result property="nickname"             column="nickname"/>
+    <result property="gender"               column="gender"/>
+    <result property="mobile"               column="mobile"/>
+    <result property="mobileVerified"       column="mobile_verified"/>
+    <result property="email"                column="email"/>
+    <result property="emailVerified"        column="email_verified"/>
+    <result property="avatar"               column="avatar"/>
+    <result property="url"                  column="url"/>
+    <result property="description"          column="description"/>
+    <result property="state"                column="state"/>
+    <result property="changePassword"       column="change_password"/>
+    <result property="validTime"            column="valid_time"/>
+    <result property="expiredTime"          column="expired_time"/>
+    <result property="comment"              column="comment"/>
+    <result property="predefined"           column="predefined"/>
+    <result property="createTime"           column="create_time"/>
+    <result property="modifyTime"           column="modify_time"/>
+    <result property="deleteTime"           column="delete_time"/>
+    <association property="organization"
+      javaType="ltd.qubit.commons.model.StatefulInfo"
+      resultMap="ltd.qubit.commons.dao.mapper.StatefulInfoResultMap"
+      columnPrefix="organization_"/>
+    <association property="lastLogin"
+      javaType="ltd.qubit.model.commons.AuthorizeRecord"
+      resultMap="ltd.qubit.commons.dao.mapper.AuthorizeRecordResultMap"
+      columnPrefix="last_login_"/>
+  </resultMap>
+
+  <sql id="selectUser">
+    SELECT  u.`id`                        AS `id`,
+            u.`username`                  AS `username`,
+            u.`password`                  AS `password`,
+            u.`name`                      AS `name`,
+            u.`nickname`                  AS `nickname`,
+            u.`gender`                    AS `gender`,
+            u.`mobile`                    AS `mobile`,
+            u.`mobile_verified`           AS `mobile_verified`,
+            u.`email`                     AS `email`,
+            u.`email_verified`            AS `email_verified`,
+            u.`avatar`                    AS `avatar`,
+            u.`url`                       AS `url`,
+            u.`description`               AS `description`,
+            <include refid="ltd.qubit.commons.dao.mapper.selectColumnStatefulInfo">
+              <property name="alias"            value="o"/>
+              <property name="columnPrefix"     value=""/>
+              <property name="asPrefix"         value="organization_"/>
+            </include>
+            u.`state`                     AS `state`,
+            <include refid="ltd.qubit.commons.dao.mapper.selectColumnAuthorizeRecord">
+              <property name="alias"          value="u"/>
+              <property name="columnPrefix"   value="last_login_"/>
+              <property name="asPrefix"       value="last_login_"/>
+            </include>
+            u.`change_password`           AS `change_password`,
+            u.`valid_time`                AS `valid_time`,
+            u.`expired_time`              AS `expired_time`,
+            u.`comment`                   AS `comment`,
+            u.`predefined`                AS `predefined`,
+            u.`create_time`               AS `create_time`,
+            u.`modify_time`               AS `modify_time`,
+            u.`delete_time`               AS `delete_time`
+    FROM `user` AS u
+    LEFT JOIN `organization` AS o ON o.`id` = u.`organization_id`
+  </sql>
+
+  <select id="count" parameterType="map"
+    resultType="long" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.count">
+      <property name="table"  value="user"/>
+      <property name="alias"  value="u"/>
+      <property name="sql"    value="selectUser"/>
+    </include>
+  </select>
+
+  <select id="list" parameterType="map"
+    resultMap="UserResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.list">
+      <property name="sql"    value="selectUser"/>
+      <property name="alias"  value="u"/>
+    </include>
+  </select>
+
+  <select id="exist" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.exist">
+      <property name="table" value="user"/>
+    </include>
+  </select>
+
+  <select id="existNonDeleted" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.existNonDeleted">
+      <property name="table" value="user"/>
+    </include>
+  </select>
+
+  <select id="existUsername" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.existUsername">
+      <property name="table" value="user"/>
+    </include>
+  </select>
+
+  <select id="existMobile" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.existMobile">
+      <property name="table" value="user"/>
+    </include>
+  </select>
+
+  <select id="existEmail" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.existEmail">
+      <property name="table" value="user"/>
+    </include>
+  </select>
+
+  <select id="get" parameterType="map"
+    resultMap="UserResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.get">
+      <property name="sql" value="selectUser"/>
+      <property name="alias" value="u"/>
+    </include>
+  </select>
+
+  <select id="getByUsername" parameterType="map" resultMap="UserResultMap"
+          resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getByUsername">
+      <property name="sql" value="selectUser"/>
+      <property name="alias" value="u"/>
+    </include>
+  </select>
+
+  <select id="getIdByUsername" parameterType="map"
+    resultType="Long" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getIdByUsername">
+      <property name="table" value="user"/>
+    </include>
+  </select>
+
+  <select id="getByMobile" parameterType="map"
+    resultMap="UserResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getByMobile">
+      <property name="sql" value="selectUser"/>
+      <property name="alias" value="u"/>
+    </include>
+  </select>
+
+  <select id="getIdByMobile" parameterType="map"
+    resultType="Long" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getIdByMobile">
+      <property name="table" value="user"/>
+    </include>
+  </select>
+
+  <select id="getByEmail" parameterType="map"
+    resultMap="UserResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getByEmail">
+      <property name="sql" value="selectUser"/>
+      <property name="alias" value="u"/>
+    </include>
+  </select>
+
+  <select id="getIdByEmail" parameterType="map"
+    resultType="Long" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getIdByEmail">
+      <property name="table" value="user"/>
+    </include>
+  </select>
+
+  <select id="getInfo" parameterType="map"
+    resultMap="ltd.qubit.commons.dao.mapper.UserInfoResultMap"
+    resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.selectUserInfo">
+      <property name="table" value="user"/>
+      <property name="alias" value="u"/>
+      <property name="columnPrefix" value=""/>
+      <property name="asPrefix" value=""/>
+    </include>
+    WHERE u.`id` = #{id}
+    LIMIT 1
+  </select>
+
+  <select id="getInfoByUsername" parameterType="map"
+    resultMap="ltd.qubit.commons.dao.mapper.UserInfoResultMap"
+    resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.selectUserInfo">
+      <property name="table" value="user"/>
+      <property name="alias" value="u"/>
+      <property name="columnPrefix" value=""/>
+      <property name="asPrefix" value=""/>
+    </include>
+    WHERE u.`username` = #{username}
+    LIMIT 1
+  </select>
+
+  <select id="getInfoByMobile" parameterType="map"
+    resultMap="ltd.qubit.commons.dao.mapper.UserInfoResultMap"
+    resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.selectUserInfo">
+      <property name="table" value="user"/>
+      <property name="alias" value="u"/>
+      <property name="columnPrefix" value=""/>
+      <property name="asPrefix" value=""/>
+    </include>
+    WHERE u.`mobile` = #{mobile}
+    LIMIT 1
+  </select>
+
+  <select id="getInfoByEmail" parameterType="map"
+    resultMap="ltd.qubit.commons.dao.mapper.UserInfoResultMap"
+    resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.selectUserInfo">
+      <property name="table" value="user"/>
+      <property name="alias" value="u"/>
+      <property name="columnPrefix" value=""/>
+      <property name="asPrefix" value=""/>
+    </include>
+    WHERE u.`email` = #{email}
+    LIMIT 1
+  </select>
+
+  <insert id="add" parameterType="ltd.qubit.model.person.User"
+          useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+    INSERT INTO `user` (
+      `id`,
+      `username`,
+      `password`,
+      `name`,
+      `nickname`,
+      `gender`,
+      `mobile`,
+      `mobile_verified`,
+      `email`,
+      `email_verified`,
+      `avatar`,
+      `url`,
+      `description`,
+      `organization_id`,
+      `state`,
+      `change_password`,
+      `valid_time`,
+      `expired_time`,
+    <include refid="ltd.qubit.commons.dao.mapper.insertColumnAuthorizeRecord">
+      <property name="prefix"  value="last_login_"/>
+    </include>
+      `predefined`,
+      `comment`,
+      `create_time`
+    ) VALUES (
+      #{id},
+      #{username},
+      #{password},
+      #{name},
+      #{nickname},
+      #{gender},
+      #{mobile},
+      #{mobileVerified},
+      #{email},
+      #{emailVerified},
+      #{avatar},
+      #{url},
+      #{description},
+      #{organization.id},
+      #{state},
+      #{changePassword},
+      #{validTime},
+      #{expiredTime},
+    <include refid="ltd.qubit.commons.dao.mapper.insertValueAuthorizeRecord">
+      <property name="prefix"  value="lastLogin."/>
+    </include>
+      #{predefined},
+      #{comment},
+      #{createTime}
+    )
+  </insert>
+
+  <sql id="updateUser">
+    UPDATE `user`
+    SET   `name`            = #{name},
+          `nickname`        = #{nickname},
+          `gender`          = #{gender},
+          `avatar`          = #{avatar},
+          `url`             = #{url},
+          `description`     = #{description},
+          `modify_time`     = #{modifyTime}
+  </sql>
+
+  <update id="update" parameterType="ltd.qubit.model.person.User">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeleted">
+      <property name="sql" value="updateUser"/>
+    </include>
+  </update>
+
+  <update id="updateByUsername" parameterType="ltd.qubit.model.person.User">
+    <include refid="updateUser"/>
+    WHERE `username` = #{username}
+      AND `delete_time` IS NULL
+  </update>
+
+  <update id="updatePassword" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedPassword">
+      <property name="table" value="user"/>
+    </include>
+  </update>
+
+  <update id="updateMobile" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedMobile">
+      <property name="table" value="user"/>
+    </include>
+  </update>
+
+  <update id="updateEmail" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedEmail">
+      <property name="table" value="user"/>
+    </include>
+  </update>
+
+  <update id="updateAvatar" parameterType="map">
+    UPDATE `user`
+      SET `avatar`        = #{avatar},
+          `modify_time`   = #{modifyTime}
+    WHERE `id` = #{id}
+      AND `delete_time` IS NULL
+  </update>
+
+  <update id="updateComment" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedComment">
+      <property name="table" value="user"/>
+    </include>
+  </update>
+
+  <update id="updateState" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedState">
+      <property name="table" value="user"/>
+    </include>
+  </update>
+
+  <update id="updateLastLogin" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedAuthorizeRecord">
+      <property name="table"            value="user"/>
+      <property name="columnPrefix"     value="last_login_"/>
+      <property name="paramPrefix"      value="lastLogin."/>
+    </include>
+  </update>
+
+  <update id="updateChangePassword" parameterType="map">
+    UPDATE `user`
+    SET `change_password`   = #{changePassword},
+        `modify_time`       = #{modifyTime}
+    WHERE `id` = #{id}
+      AND `delete_time` IS NULL
+  </update>
+
+  <update id="delete" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.delete">
+      <property name="table" value="user"/>
+    </include>
+  </update>
+
+  <update id="restore" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.restore">
+      <property name="table" value="user"/>
+    </include>
+  </update>
+
+  <delete id="purge" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.purge">
+      <property name="table" value="user"/>
+    </include>
+  </delete>
+
+  <delete id="purgeAll">
+    <include refid="ltd.qubit.commons.dao.mapper.purgeAll">
+      <property name="table" value="user"/>
+    </include>
+  </delete>
+
+  <delete id="erase" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.erase">
+      <property name="table" value="user"/>
+    </include>
+  </delete>
+
+  <delete id="clear">
+    <include refid="ltd.qubit.commons.dao.mapper.clear">
+      <property name="table" value="user"/>
+    </include>
+  </delete>
+</mapper>

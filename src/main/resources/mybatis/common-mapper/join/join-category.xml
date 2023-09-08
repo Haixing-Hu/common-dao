@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.mapper">
+
+  <!--
+    关联 category 表获取 Category 对象的 InfoWithEntity 对象的字段
+
+    == 参数 ==
+    alias:          主表的别名
+    categoryAlias:  关联的 category 表的别名
+   -->
+  <sql id="joinCategory">
+    LEFT JOIN `category` AS ${categoryAlias}
+         ON ${categoryAlias}.`id` = ${alias}.`category_id`
+        AND ${categoryAlias}.`delete_time` IS NULL
+  </sql>
+
+</mapper>

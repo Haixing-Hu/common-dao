@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.mapper">
+
+  <!-- 根据ID获取未被标记删除对象的token -->
+  <sql id="getNonDeletedToken">
+    SELECT
+    <include refid="ltd.qubit.commons.dao.mapper.selectColumnToken">
+      <property name="alias"          value="t"/>
+      <property name="columnPrefix"   value="token_"/>
+      <property name="asPrefix"       value=""/>
+    </include>
+    1 FROM `${table}` AS t  <!-- 1 是为了解决上面SQL片段以逗号结尾的问题 -->
+    WHERE t.`id` = #{id}
+      AND t.`delete_time` IS NULL
+    LIMIT 1
+  </sql>
+
+</mapper>

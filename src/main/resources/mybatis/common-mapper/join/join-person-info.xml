@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.mapper">
+
+  <!--
+    关联 person 表获取 PersonInfo 对象的字段
+
+    == 参数 ==
+    alias:                  主表的别名
+    joinColumn:             主表关联 person 表的列名
+    personAlias:            主表属性关联的 person 表的别名
+    personCredentialAlias:  person.credential 关联的 credential 表的别名
+  -->
+  <sql id="joinPersonInfo">
+    LEFT JOIN `person`                  AS ${personAlias}
+           ON ${personAlias}.`id`       = ${alias}.`${joinColumn}`
+         <!-- FIXME: 是否应限制 person 未被删除? -->
+    <include refid="ltd.qubit.commons.dao.mapper.joinCredential">
+      <property name="alias"                    value="${personAlias}"/>
+      <property name="type"                     value="PERSON"/>
+      <property name="property"                 value="CREDENTIAL"/>
+      <property name="credentialAlias"          value="${personCredentialAlias}"/>
+    </include>
+  </sql>
+
+</mapper>

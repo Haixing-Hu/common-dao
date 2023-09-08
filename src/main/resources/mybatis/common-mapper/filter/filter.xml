@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.mapper">
+
+  <!-- 根据简单条件(SimpleCriterion)过滤的动态SQL -->
+  <sql id="filterBySimpleCriterion">
+    <if test="${value} == null">
+      <choose>
+        <when test="${operator} == 'EQUAL'">
+          ${alias}.`${field}` IS NULL
+        </when>
+        <when test="${operator} == 'NOT_EQUAL'">
+          ${alias}.`${field}` IS NOT NULL
+        </when>
+        <otherwise>
+          'ERROR: invalid operator.'
+        </otherwise>
+      </choose>
+    </if>
+    <if test="${value} != null">
+      <choose>
+        <when test="${operator} == 'EQUAL'">
+          <if test="${compareProperties} == true">
+            ${alias}.`${field}` = ${alias}.`${valueAsField}`
+          </if>
+          <if test="${compareProperties} == false">
+            ${alias}.`${field}` = #{${value}}
+          </if>
+        </when>
+        <when test="${operator} == 'NOT_EQUAL'">
+          <if test="${compareProperties} == true">
+            ${alias}.`${field}` != ${alias}.`${valueAsField}`
+          </if>
+          <if test="${compareProperties} == false">
+            ${alias}.`${field}` != #{${value}}
+          </if>
+        </when>
+        <when test="${operator} == 'LESS'">
+          <if test="${compareProperties} == true">
+            ${alias}.`${field}` &lt; ${alias}.`${valueAsField}`
+          </if>
+          <if test="${compareProperties} == false">
+            ${alias}.`${field}` &lt; #{${value}}
+          </if>
+        </when>
+        <when test="${operator} == 'LESS_EQUAL'">
+          <if test="${compareProperties} == true">
+            ${alias}.`${field}` &lt;= ${alias}.`${valueAsField}`
+          </if>
+          <if test="${compareProperties} == false">
+            ${alias}.`${field}` &lt;= #{${value}}
+          </if>
+        </when>
+        <when test="${operator} == 'GREATER'">
+          <if test="${compareProperties} == true">
+            ${alias}.`${field}` &gt; ${alias}.`${valueAsField}`
+          </if>
+          <if test="${compareProperties} == false">
+            ${alias}.`${field}` &gt; #{${value}}
+          </if>
+        </when>
+        <when test="${operator} == 'GREATER_EQUAL'">
+          <if test="${compareProperties} == true">
+            ${alias}.`${field}` &gt;= ${alias}.`${valueAsField}`
+          </if>
+          <if test="${compareProperties} == false">
+            ${alias}.`${field}` &gt;= #{${value}}
+          </if>
+        </when>
+        <when test="${operator} == 'IN'">
+          ${alias}.`${field}` IN
+          <foreach item="item" index="index" collection="${value}"
+            open="(" separator="," close=")">
+            #{item}
+          </foreach>
+        </when>
+        <when test="${operator} == 'NOT_IN'">
+          ${alias}.`${field}` NOT IN
+          <foreach item="item" index="index" collection="${value}"
+            open="(" separator="," close=")">
+            #{item}
+          </foreach>
+        </when>
+        <when test="${operator} == 'LIKE'">
+          ${alias}.`${field}` LIKE #{${value}}
+        </when>
+        <when test="${operator} == 'NOT_LIKE'">
+          ${alias}.`${field}` NOT LIKE #{${value}}
+        </when>
+        <otherwise>
+          'ERROR: invalid operator.'
+        </otherwise>
+      </choose>
+    </if>
+  </sql>
+
+  <!--
+    根据复合条件(ComposedCriterion)过滤的动态SQL
+
+    注意：受到MyBatis的功能限制，目前只支持一层复合条件，
+    即通过连接词 AND, OR, NOT 连接 SimpleCriterion 的复合条件
+  -->
+  <sql id="filterByComposedCriterion">
+    <choose>
+      <when test="${relation} == 'AND'">
+        <foreach item="item" index="index" collection="${criteria}" separator=" AND ">
+          (
+            <include refid="ltd.qubit.commons.dao.mapper.filterBySimpleCriterion">
+              <property name="alias" value="${alias}"/>
+              <property name="field" value="${item.field}"/>
+              <property name="operator" value="item.operator.name"/>
+              <property name="value" value="item.value"/>
+              <property name="compareProperties" value="item.compareProperties"/>
+              <property name="valueAsField" value="${item.value}"/>
+            </include>
+          )
+        </foreach>
+      </when>
+      <when test="${relation} == 'OR'">
+        <foreach item="item" index="index" collection="${criteria}" separator=" OR ">
+          (
+          <include refid="ltd.qubit.commons.dao.mapper.filterBySimpleCriterion">
+            <property name="alias" value="${alias}"/>
+            <property name="field" value="${item.field}"/>
+            <property name="operator" value="item.operator.name"/>
+            <property name="value" value="item.value"/>
+            <property name="compareProperties" value="item.compareProperties"/>
+            <property name="valueAsField" value="${item.value}"/>
+          </include>
+          )
+        </foreach>
+      </when>
+      <when test="${relation} == 'NOT'">
+        NOT
+        <foreach item="item" index="index" collection="${criteria}" separator=" AND ">
+          (
+          <include refid="ltd.qubit.commons.dao.mapper.filterBySimpleCriterion">
+            <property name="alias" value="${alias}"/>
+            <property name="field" value="${item.field}"/>
+            <property name="operator" value="item.operator.name"/>
+            <property name="value" value="item.value"/>
+            <property name="compareProperties" value="item.compareProperties"/>
+            <property name="valueAsField" value="${item.value}"/>
+          </include>
+          )
+        </foreach>
+      </when>
+      <otherwise>
+        'ERROR: invalid logic relation.'
+      </otherwise>
+    </choose>
+  </sql>
+
+  <!--
+    根据条件对结果进行过滤的 where 语句动态SQL
+
+    SQL片段参数
+    ==========
+    alias: 主表的别名
+
+    Mapper参数
+    =========
+    filter: 条件过滤器
+  -->
+  <sql id="filter">
+    <if test="filter != null">
+      <where>
+        <!-- 根据简单条件过滤 -->
+        <if test="filter instanceof ltd.qubit.commons.sql.SimpleCriterion">
+          <include refid="ltd.qubit.commons.dao.mapper.filterBySimpleCriterion">
+            <property name="alias" value="${alias}"/>
+            <property name="field" value="${filter.field}"/>
+            <property name="operator" value="filter.operator.name"/>
+            <property name="value" value="filter.value"/>
+            <property name="compareProperties" value="filter.compareProperties"/>
+            <property name="valueAsField" value="${filter.value}"/>
+          </include>
+        </if>
+        <!-- 根据复合条件过滤 -->
+        <if test="filter instanceof ltd.qubit.commons.sql.ComposedCriterion">
+          <include refid="ltd.qubit.commons.dao.mapper.filterByComposedCriterion">
+            <property name="alias" value="${alias}"/>
+            <property name="relation" value="filter.relation.name"/>
+            <property name="criteria" value="filter.criteria"/>
+          </include>
+        </if>
+      </where>
+    </if>
+  </sql>
+</mapper>

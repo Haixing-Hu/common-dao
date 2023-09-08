@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.mapper.UserInfoMapper">
+
+  <select id="exist" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.exist">
+      <property name="table" value="user_info"/>
+    </include>
+  </select>
+
+  <select id="existUsername" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.existUsername">
+      <property name="table" value="user_info"/>
+    </include>
+  </select>
+
+  <select id="get" parameterType="map"
+    resultMap="ltd.qubit.commons.dao.mapper.UserInfoResultMap"
+    resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.selectUserInfo"/>
+    WHERE u.`id` = #{id}
+    LIMIT 1
+  </select>
+
+  <select id="getByUsername" parameterType="map"
+    resultMap="ltd.qubit.commons.dao.mapper.UserInfoResultMap"
+    resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.selectUserInfo"/>
+    WHERE u.`username` = #{username}
+    LIMIT 1
+  </select>
+
+  <insert id="add" parameterType="ltd.qubit.model.person.UserInfo">
+    INSERT INTO `user_info` (
+      `id`,
+      `username`,
+      `name`,
+      `nickname`,
+      `avatar`,
+      `state`,
+      `delete_time`
+    ) VALUES (
+      #{id},
+      #{username},
+      #{name},
+      #{nickname},
+      #{avatar},
+      #{state},
+      #{deleteTime}
+    )
+  </insert>
+
+  <update id="update" parameterType="ltd.qubit.model.person.UserInfo">
+    UPDATE `user_info`
+       SET `name`     = #{name},
+           `nickname` = #{nickname},
+           `avatar`   = #{avatar}
+     WHERE `id` = #{id}
+       AND `delete_time` IS NULL
+  </update>
+
+  <update id="delete" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.delete">
+      <property name="table" value="user_info"/>
+    </include>
+  </update>
+
+  <update id="restore" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.restore">
+      <property name="table" value="user_info"/>
+    </include>
+  </update>
+
+  <delete id="purge" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.purge">
+      <property name="table" value="user_info"/>
+    </include>
+  </delete>
+
+  <delete id="purgeAll">
+    <include refid="ltd.qubit.commons.dao.mapper.purgeAll">
+      <property name="table" value="user_info"/>
+    </include>
+  </delete>
+
+  <delete id="clear">
+    <include refid="ltd.qubit.commons.dao.mapper.clear">
+      <property name="table" value="user_info"/>
+    </include>
+  </delete>
+
+</mapper>

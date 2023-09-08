@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.mapper">
+
+  <sql id="selectColumnAttachment">
+    ${attachmentAlias}.`${columnPrefix}id`                AS `${asPrefix}id`,
+    ${attachmentAlias}.`${columnPrefix}owner_type`        AS `${asPrefix}owner_type`,
+    ${attachmentAlias}.`${columnPrefix}owner_id`          AS `${asPrefix}owner_id`,
+    ${attachmentAlias}.`${columnPrefix}owner_property`    AS `${asPrefix}owner_property`,
+    ${attachmentAlias}.`${columnPrefix}type`              AS `${asPrefix}type`,
+    <include refid="ltd.qubit.commons.dao.mapper.selectColumnInfoWithEntity">
+      <property name="alias"                              value="${categoryAlias}"/>
+      <property name="columnPrefix"                       value=""/>
+      <property name="asPrefix"                           value="${asPrefix}category_"/>
+    </include>
+    ${attachmentAlias}.`${columnPrefix}index`             AS `${asPrefix}index`,
+    ${attachmentAlias}.`${columnPrefix}title`             AS `${asPrefix}title`,
+    ${attachmentAlias}.`${columnPrefix}description`       AS `${asPrefix}description`,
+    <include refid="ltd.qubit.commons.dao.mapper.selectColumnUpload">
+      <property name="uploadAlias"                        value="${uploadAlias}"/>
+      <property name="columnPrefix"                       value=""/>
+      <property name="asPrefix"                           value="${asPrefix}upload_"/>
+    </include>
+    ${attachmentAlias}.`${columnPrefix}state`             AS `${asPrefix}state`,
+    ${attachmentAlias}.`${columnPrefix}visible`           AS `${asPrefix}visible`,
+    ${attachmentAlias}.`${columnPrefix}create_time`       AS `${asPrefix}create_time`,
+    ${attachmentAlias}.`${columnPrefix}modify_time`       AS `${asPrefix}modify_time`,
+    ${attachmentAlias}.`${columnPrefix}delete_time`       AS `${asPrefix}delete_time`,
+  </sql>
+</mapper>

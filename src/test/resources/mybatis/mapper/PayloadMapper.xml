@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.testbed.mapper.PayloadMapper">
+
+  <resultMap id="PayloadResultMap" type="ltd.qubit.model.commons.Payload">
+    <id property="id"                         column="id"/>
+    <result property="key"                    column="key"/>
+    <result property="value"                  column="value"/>
+    <result property="owner.type"             column="owner_type"/>
+    <result property="owner.id"               column="owner_id"/>
+    <result property="owner.property"         column="owner_property"/>
+    <result property="createTime"             column="create_time"/>
+    <result property="modifyTime"             column="modify_time"/>
+    <result property="deleteTime"             column="delete_time"/>
+  </resultMap>
+
+  <sql id="selectPayload">
+    SELECT  p.`id`                  AS `id`,
+            p.`key`                 AS `key`,
+            p.`value`               AS `value`,
+            p.`owner_type`          AS `owner_type`,
+            p.`owner_id`            AS `owner_id`,
+            p.`owner_property`      AS `owner_property`,
+            p.`create_time`         AS `create_time`,
+            p.`modify_time`         AS `modify_time`,
+            p.`delete_time`         AS `delete_time`
+    FROM `payload` as p
+  </sql>
+
+  <select id="count" parameterType="map"
+    resultType="long" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.count">
+      <property name="table"  value="payload"/>
+      <property name="alias"  value="p"/>
+      <property name="sql"    value="selectPayload"/>
+    </include>
+  </select>
+
+  <select id="list" parameterType="map"
+    resultMap="PayloadResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.list">
+      <property name="sql"    value="selectPayload"/>
+      <property name="alias"  value="p"/>
+    </include>
+  </select>
+
+  <select id="countForOwner" parameterType="map"
+    resultType="long" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.countNonDeletedForOwner">
+      <property name="table" value="payload"/>
+    </include>
+  </select>
+
+  <select id="getForOwner" parameterType="map"
+    resultMap="PayloadResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getNonDeletedForOwner">
+      <property name="sql" value="selectPayload"/>
+      <property name="alias" value="p"/>
+    </include>
+  </select>
+
+  <select id="getIdForOwner" parameterType="map"
+    resultType="long" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getNonDeletedIdForOwner">
+      <property name="table" value="payload"/>
+    </include>
+  </select>
+
+  <select id="exist" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.exist">
+      <property name="table" value="payload"/>
+    </include>
+  </select>
+
+  <select id="existNonDeleted" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.existNonDeleted">
+      <property name="table" value="payload"/>
+    </include>
+  </select>
+
+  <select id="existKey" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    SELECT EXISTS ( SELECT 1
+                    FROM `payload` AS p
+                    <include refid="ltd.qubit.commons.dao.mapper.filterByOwnerKey">
+                      <property name="alias" value="p"/>
+                    </include>
+                    LIMIT 1 )
+  </select>
+
+  <select id="get" parameterType="map"
+    resultMap="PayloadResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.get">
+      <property name="sql" value="selectPayload"/>
+      <property name="alias" value="p"/>
+    </include>
+  </select>
+
+  <select id="getByKey" parameterType="map"
+    resultMap="PayloadResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="selectPayload"/>
+    WHERE p.`owner_type`    = #{owner.type}
+      AND p.`owner_id`      = #{owner.id}
+      AND p.`owner_property`= #{owner.property}
+      AND p.`key`           = #{key}
+    LIMIT 1
+  </select>
+
+  <insert id="add" parameterType="ltd.qubit.model.commons.Payload">
+    INSERT INTO `payload` (
+        `id`,
+        `owner_type`,
+        `owner_id`,
+        `owner_property`,
+        `key`,
+        `value`,
+        `create_time`
+    ) VALUES (
+        #{id},
+        #{owner.type},
+        #{owner.id},
+        #{owner.property},
+        #{key},
+        #{value},
+        #{createTime}
+    )
+  </insert>
+
+  <sql id="updatePayload">
+    UPDATE `payload`
+    SET   `value`           = #{value},
+          `modify_time`     = #{modifyTime}
+  </sql>
+
+  <update id="update" parameterType="ltd.qubit.model.commons.Payload">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeleted">
+      <property name="sql" value="updatePayload"/>
+    </include>
+  </update>
+
+  <update id="updateByKey" parameterType="map">
+    <include refid="updatePayload"/>
+    WHERE `owner_type` = #{owner.type}
+      AND `owner_id` = #{owner.id}
+      AND `key` = #{key}
+      AND `delete_time` IS NULL
+  </update>
+
+  <update id="delete" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.delete">
+      <property name="table" value="payload"/>
+    </include>
+  </update>
+
+  <update id="restore" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.restore">
+      <property name="table" value="payload"/>
+    </include>
+  </update>
+
+  <delete id="purge" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.purge">
+      <property name="table" value="payload"/>
+    </include>
+  </delete>
+
+  <delete id="purgeAll">
+    <include refid="ltd.qubit.commons.dao.mapper.purgeAll">
+      <property name="table" value="payload"/>
+    </include>
+  </delete>
+
+  <update id="erase" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.erase">
+      <property name="table" value="payload"/>
+    </include>
+  </update>
+
+  <delete id="clear">
+    <include refid="ltd.qubit.commons.dao.mapper.clear">
+      <property name="table" value="payload"/>
+    </include>
+  </delete>
+
+  <update id="deleteForOwner" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.deleteForOwner">
+      <property name="table" value="payload"/>
+    </include>
+  </update>
+
+  <update id="restoreForOwner" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.restoreForOwner">
+      <property name="table" value="payload"/>
+    </include>
+  </update>
+
+  <delete id="purgeForOwner" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.purgeForOwner">
+      <property name="table" value="payload"/>
+    </include>
+  </delete>
+
+  <delete id="eraseForOwner">
+    <include refid="ltd.qubit.commons.dao.mapper.eraseForOwner">
+      <property name="table" value="payload"/>
+    </include>
+  </delete>
+
+  <delete id="eraseByKey" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.eraseByOwnerKey">
+      <property name="table" value="payload"/>
+    </include>
+  </delete>
+
+</mapper>

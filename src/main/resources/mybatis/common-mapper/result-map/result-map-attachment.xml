@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.mapper">
+
+  <resultMap id="AttachmentResultMap" type="ltd.qubit.model.upload.Attachment">
+    <id property="id"                                    column="id"/>
+    <result property="owner.type"                        column="owner_type"/>
+    <result property="owner.id"                          column="owner_id"/>
+    <result property="owner.property"                    column="owner_property"/>
+    <result property="type"                              column="type"/>
+    <result property="index"                             column="index"/>
+    <result property="title"                             column="title"/>
+    <result property="description"                       column="description"/>
+    <result property="state"                             column="state"/>
+    <result property="visible"                           column="visible"/>
+    <result property="createTime"                        column="create_time"/>
+    <result property="modifyTime"                        column="modify_time"/>
+    <result property="deleteTime"                        column="delete_time"/>
+    <association property="category"
+      javaType="ltd.qubit.commons.model.InfoWithEntity"
+      resultMap="ltd.qubit.commons.dao.mapper.InfoWithEntityResultMap"
+      columnPrefix="category_"/>
+    <association property="upload"
+      javaType="ltd.qubit.model.upload.Upload"
+      resultMap="ltd.qubit.commons.dao.mapper.UploadResultMap"
+      columnPrefix="upload_"/>
+  </resultMap>
+
+</mapper>

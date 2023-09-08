@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:tx="http://www.springframework.org/schema/tx"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+  <!-- 使用 Druid 连接池的数据源，通常用于生产环境 -->
+  <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+    init-method="init" destroy-method="close">
+    <!-- 基本属性 url、user、password -->
+    <property name="url" value="${db.url}"/>
+    <property name="username" value="${db.username}"/>
+    <property name="password" value="${db.password}"/>
+    <!-- JDBC 驱动程序 -->
+    <property name="driverClassName" value="${db.driver}"/>
+    <!-- 配置初始化大小、最小、最大 -->
+    <property name="initialSize" value="1"/>
+    <property name="minIdle" value="1"/>
+    <property name="maxActive" value="20"/>
+    <!-- 如果 initialSize 数量较大时，打开 asyncInit 会加快应用启动时间 -->
+    <property name="asyncInit" value="true"/>
+    <!-- 配置获取连接等待超时的时间 -->
+    <property name="maxWait" value="60000"/>
+    <!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+    <property name="timeBetweenEvictionRunsMillis" value="60000"/>
+    <!-- 配置一个连接在池中最小、最大生存的时间，单位是毫秒 -->
+    <property name="minEvictableIdleTimeMillis" value="300000"/>
+    <property name="maxEvictableIdleTimeMillis" value="900000"/>
+    <property name="validationQuery" value="SELECT 1"/>
+    <property name="testWhileIdle" value="true"/>
+    <property name="testOnBorrow" value="false"/>
+    <property name="testOnReturn" value="false"/>
+    <!-- 连接池中的minIdle数量以内的连接，空闲时间超过minEvictableIdleTimeMillis，则会执行keepAlive操作。-->
+    <property name="keepAlive" value="true"/>
+    <!-- 配置对PSCache的支持。PSCache对支持游标的数据库性能提升巨大，比如说oracle；在mysql下建议关闭。-->
+    <property name="poolPreparedStatements" value="true"/>
+    <property name="maxOpenPreparedStatements" value="20"/>
+    <!-- 配置filters -->
+    <property name="filters" value="stat,slf4j,encoding"/>
+  </bean>
+
+  <!-- Transaction support-->
+  <bean id="mybatisTransactionManager"
+    class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+    <property name="dataSource" ref="dataSource"/>
+  </bean>
+
+  <!-- Enable transaction annotation support for the services -->
+  <tx:annotation-driven transaction-manager="mybatisTransactionManager" />
+
+  <!-- 配置 MyBatis SqlSessionFactory -->
+  <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+    <property name="dataSource" ref="dataSource"/>
+    <property name="configLocation" value="classpath:/mybatis/config.xml"/>
+    <!-- MyBatis不支持typeAliasesPackage中使用通配符 -->
+    <!-- <property name="typeAliasesPackage" value="ltd.qubit.*.model"/> -->
+    <property name="mapperLocations">
+      <array>
+        <!--
+           注意公共的mapper不能也放在 /mybatis/mapper 中，
+           要不然spring在当前项目的classpath中找到了 /mybatis/mapper/**/*.xml 后，
+           就不会再到 common-core.jar 的 /mybatis/mapper 中去找 *.xml 了
+           这个有点奇怪，感觉是 spring 的 resource 查找机制的问题
+        -->
+        <value>classpath:/mybatis/common-mapper/**/*.xml</value>
+        <value>classpath*:/mybatis/mapper/**/*.xml</value>
+      </array>
+    </property>
+  </bean>
+
+  <!-- 配置 MySQL Exception translator -->
+  <bean id="exceptionTranslator" class="ltd.qubit.commons.dao.translator.MySqlExceptionTranslator">
+    <constructor-arg ref="dataSource"/>
+  </bean>
+
+  <!-- 配置 MyBatis SqlSession template -->
+  <bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+    <constructor-arg ref="sqlSessionFactory"/>
+    <constructor-arg type="org.apache.ibatis.session.ExecutorType" value="SIMPLE"/>
+    <!-- 使用自定义的 MySQL exception translator -->
+    <constructor-arg ref="exceptionTranslator"/>
+  </bean>
+
+</beans>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.mapper">
+
+  <sql id="insertColumnSimCard">
+    `${prefix}iccid`,
+    `${prefix}imei`,
+    `${prefix}meid`,
+    `${prefix}phone`,
+    `${prefix}operator`,
+    `${prefix}country_id`,
+    <include refid="ltd.qubit.commons.dao.mapper.insertColumnLocation">
+      <property name="prefix" value="${prefix}location_"/>
+    </include>
+    `${prefix}network_type`,
+    `${prefix}status`,
+  </sql>
+
+</mapper>

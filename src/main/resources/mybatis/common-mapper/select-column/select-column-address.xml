@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.mapper">
+
+  <!--
+     选择地址对应的列。
+
+     == 参数 ==
+     alias:           主表的别名，既拥有 Address.street.id 字段的表的别名
+     columnPrefix:    主表中表示 Address.street.id 的字段名的前缀，例如 address_
+     asPrefix:        选择出来的列名的前缀，例如 address_
+     countryAlias:    关联的country表的别名
+     provinceAlias:   关联的province表的别名
+     cityAlias:       关联的city表的别名
+     districtAlias:   关联的district表的别名
+     streetAlias:     关联的street表的别名
+  -->
+  <sql id="selectColumnAddress">
+    <include refid="ltd.qubit.commons.dao.mapper.selectColumnInfo">
+      <property name="alias"          value="${countryAlias}"/>
+      <property name="columnPrefix"   value=""/>
+      <property name="asPrefix"       value="${asPrefix}country_"/>
+    </include>
+    <include refid="ltd.qubit.commons.dao.mapper.selectColumnInfo">
+      <property name="alias"          value="${provinceAlias}"/>
+      <property name="columnPrefix"   value=""/>
+      <property name="asPrefix"       value="${asPrefix}province_"/>
+    </include>
+    <include refid="ltd.qubit.commons.dao.mapper.selectColumnInfo">
+      <property name="alias"          value="${cityAlias}"/>
+      <property name="columnPrefix"   value=""/>
+      <property name="asPrefix"       value="${asPrefix}city_"/>
+    </include>
+    <include refid="ltd.qubit.commons.dao.mapper.selectColumnInfo">
+      <property name="alias"          value="${districtAlias}"/>
+      <property name="columnPrefix"   value=""/>
+      <property name="asPrefix"       value="${asPrefix}district_"/>
+    </include>
+    <include refid="ltd.qubit.commons.dao.mapper.selectColumnInfo">
+      <property name="alias"          value="${streetAlias}"/>
+      <property name="columnPrefix"   value=""/>
+      <property name="asPrefix"       value="${asPrefix}street_"/>
+    </include>
+    ${alias}.`${columnPrefix}detail`         AS `${asPrefix}detail`,
+    ${alias}.`${columnPrefix}postalcode`     AS `${asPrefix}postalcode`,
+    <include refid="ltd.qubit.commons.dao.mapper.selectColumnLocation">
+      <property name="alias"          value="${alias}"/>
+      <property name="columnPrefix"   value="${columnPrefix}location_"/>
+      <property name="asPrefix"       value="${asPrefix}location_"/>
+    </include>
+  </sql>
+</mapper>

@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.testbed.mapper.CountryMapper">
+
+  <resultMap id="CountryResultMap" type="ltd.qubit.model.contact.Country">
+    <id property="id"                   column="id"/>
+    <result property="code"             column="code"/>
+    <result property="name"             column="name"/>
+    <result property="phoneArea"        column="phone_area"/>
+    <result property="postalcode"       column="postalcode"/>
+    <result property="icon"             column="icon"/>
+    <result property="url"              column="url"/>
+    <result property="description"      column="description"/>
+    <result property="predefined"       column="predefined"/>
+    <result property="createTime"       column="create_time"/>
+    <result property="modifyTime"       column="modify_time"/>
+    <result property="deleteTime"       column="delete_time"/>
+  </resultMap>
+
+  <sql id="selectCountry">
+    SELECT  c.`id`                AS `id`,
+            c.`code`              AS `code`,
+            c.`name`              AS `name`,
+            c.`phone_area`        AS `phone_area`,
+            c.`postalcode`        AS `postalcode`,
+            c.`icon`              AS `icon`,
+            c.`url`               AS `url`,
+            c.`description`       AS `description`,
+            c.`predefined`        AS `predefined`,
+            c.`create_time`       AS `create_time`,
+            c.`modify_time`       AS `modify_time`,
+            c.`delete_time`       AS `delete_time`
+    FROM `country` AS c
+  </sql>
+
+  <select id="count" parameterType="map"
+      resultType="long" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.count">
+      <property name="table"  value="country"/>
+      <property name="alias"  value="c"/>
+      <property name="sql"    value="selectCountry"/>
+    </include>
+  </select>
+
+  <select id="list" parameterType="map"
+      resultMap="CountryResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.list">
+      <property name="sql"    value="selectCountry"/>
+      <property name="alias"  value="c"/>
+    </include>
+  </select>
+
+  <select id="exist" parameterType="map"
+      resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.exist">
+      <property name="table" value="country"/>
+    </include>
+  </select>
+
+  <select id="existNonDeleted" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.existNonDeleted">
+      <property name="table" value="country"/>
+    </include>
+  </select>
+
+  <select id="existCode" parameterType="map"
+      resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.existCode">
+      <property name="table" value="country"/>
+    </include>
+  </select>
+
+  <select id="existName" parameterType="map"
+      resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.existName">
+      <property name="table" value="country"/>
+    </include>
+  </select>
+
+  <select id="get" parameterType="map"
+      resultMap="CountryResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.get">
+      <property name="sql" value="selectCountry"/>
+      <property name="alias" value="c"/>
+    </include>
+  </select>
+
+  <select id="getByCode" parameterType="map"
+      resultMap="CountryResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getByCode">
+      <property name="sql" value="selectCountry"/>
+      <property name="alias" value="c"/>
+    </include>
+  </select>
+
+  <select id="getByName" parameterType="map"
+      resultMap="CountryResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getByName">
+      <property name="sql" value="selectCountry"/>
+      <property name="alias" value="c"/>
+    </include>
+  </select>
+
+  <select id="getIdByCode" parameterType="map"
+      resultType="Long" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getIdByCode">
+      <property name="table" value="country"/>
+    </include>
+  </select>
+
+  <select id="getIdByName" parameterType="map"
+      resultType="Long" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getIdByName">
+      <property name="table" value="country"/>
+    </include>
+  </select>
+
+  <select id="getInfo" parameterType="map"
+      resultMap="ltd.qubit.commons.dao.mapper.InfoResultMap"
+      resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getInfo">
+      <property name="table" value="country"/>
+    </include>
+  </select>
+
+  <select id="getInfoByCode" parameterType="map"
+          resultMap="ltd.qubit.commons.dao.mapper.InfoResultMap"
+          resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getInfoByCode">
+      <property name="table" value="country"/>
+    </include>
+  </select>
+
+  <select id="getInfoByName" parameterType="map"
+    resultMap="ltd.qubit.commons.dao.mapper.InfoResultMap"
+    resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getInfoByName">
+      <property name="table" value="country"/>
+    </include>
+  </select>
+
+  <insert id="add" parameterType="ltd.qubit.model.contact.Country">
+    INSERT INTO `country` (
+        `id`,
+        `code`,
+        `name`,
+        `phone_area`,
+        `postalcode`,
+        `icon`,
+        `url`,
+        `description`,
+        `predefined`,
+        `create_time`
+    ) VALUES (
+        #{id},
+        #{code},
+        #{name},
+        #{phoneArea},
+        #{postalcode},
+        #{icon},
+        #{url},
+        #{description},
+        #{predefined},
+        #{createTime}
+    )
+  </insert>
+
+  <sql id="updateCountry">
+    UPDATE `country`
+    SET   `name`          = #{name},
+          `phone_area`    = #{phoneArea},
+          `postalcode`    = #{postalcode},
+          `icon`          = #{icon},
+          `url`           = #{url},
+          `description`   = #{description},
+          `predefined`    = #{predefined},
+          `modify_time`   = #{modifyTime}
+  </sql>
+
+  <update id="update" parameterType="ltd.qubit.model.contact.Country">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeleted">
+      <property name="sql" value="updateCountry"/>
+    </include>
+  </update>
+
+  <update id="updateByCode" parameterType="ltd.qubit.model.contact.Country">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedByCode">
+      <property name="sql" value="updateCountry"/>
+    </include>
+  </update>
+
+  <update id="updateByName" parameterType="ltd.qubit.model.contact.Country">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedByName">
+      <property name="sql" value="updateCountry"/>
+    </include>
+  </update>
+
+  <update id="delete" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.delete">
+      <property name="table" value="country"/>
+    </include>
+  </update>
+
+  <update id="deleteByCode" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.deleteByCode">
+      <property name="table" value="country"/>
+    </include>
+  </update>
+
+  <update id="deleteByName" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.deleteByName">
+      <property name="table" value="country"/>
+    </include>
+  </update>
+
+  <update id="restore" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.restore">
+      <property name="table" value="country"/>
+    </include>
+  </update>
+
+  <update id="restoreByCode" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.restoreByCode">
+      <property name="table" value="country"/>
+    </include>
+  </update>
+
+  <update id="restoreByName" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.restoreByName">
+      <property name="table" value="country"/>
+    </include>
+  </update>
+
+  <delete id="purge" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.purge">
+      <property name="table" value="country"/>
+    </include>
+  </delete>
+
+  <delete id="purgeByCode" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.purgeByCode">
+      <property name="table" value="country"/>
+    </include>
+  </delete>
+
+  <delete id="purgeByName" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.purgeByName">
+      <property name="table" value="country"/>
+    </include>
+  </delete>
+
+  <delete id="purgeAll">
+    <include refid="ltd.qubit.commons.dao.mapper.purgeAll">
+      <property name="table" value="country"/>
+    </include>
+  </delete>
+
+  <update id="erase" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.erase">
+      <property name="table" value="country"/>
+    </include>
+  </update>
+
+  <update id="eraseByCode" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.eraseByCode">
+      <property name="table" value="country"/>
+    </include>
+  </update>
+
+  <update id="eraseByName" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.eraseByName">
+      <property name="table" value="country"/>
+    </include>
+  </update>
+
+  <delete id="clear">
+    <include refid="ltd.qubit.commons.dao.mapper.clear">
+      <property name="table" value="country"/>
+    </include>
+  </delete>
+</mapper>

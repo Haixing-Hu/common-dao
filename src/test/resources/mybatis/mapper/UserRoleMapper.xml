@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.testbed.mapper.UserRoleMapper">
+
+  <resultMap id="UserRoleResultMap" type="ltd.qubit.model.privilege.UserRole">
+    <id property="id"                                       column="id"/>
+    <result property="createTime"                           column="create_time"/>
+    <result property="deleteTime"                           column="delete_time"/>
+    <association property="user"
+      javaType="ltd.qubit.model.person.UserInfo"
+      resultMap="ltd.qubit.commons.dao.mapper.UserInfoResultMap"
+      columnPrefix="user_"/>
+    <association property="app"
+      javaType="ltd.qubit.commons.model.StatefulInfo"
+      resultMap="ltd.qubit.commons.dao.mapper.StatefulInfoResultMap"
+      columnPrefix="app_"/>
+    <association property="role"
+      javaType="ltd.qubit.commons.model.StatefulInfo"
+      resultMap="ltd.qubit.commons.dao.mapper.StatefulInfoResultMap"
+      columnPrefix="role_"/>
+  </resultMap>
+
+  <sql id="selectUserRole">
+    SELECT  ur.`id`                         AS `id`,
+            <include refid="ltd.qubit.commons.dao.mapper.selectColumnUserInfo">
+              <property name="alias"          value="u"/>
+              <property name="columnPrefix"   value=""/>
+              <property name="asPrefix"       value="user_"/>
+            </include>
+            <include refid="ltd.qubit.commons.dao.mapper.selectColumnStatefulInfo">
+              <property name="alias"          value="a"/>
+              <property name="columnPrefix"   value=""/>
+              <property name="asPrefix"       value="app_"/>
+            </include>
+            <include refid="ltd.qubit.commons.dao.mapper.selectColumnStatefulInfo">
+              <property name="alias"          value="r"/>
+              <property name="columnPrefix"   value=""/>
+              <property name="asPrefix"       value="role_"/>
+            </include>
+            ur.`create_time`                AS `create_time`,
+            ur.`delete_time`                AS `delete_time`
+    FROM `user_role` AS ur
+    JOIN `app`  AS a
+      ON a.`id`  = ur.`app_id`
+    JOIN `user` AS u
+      ON u.`id`  = ur.`user_id`
+    JOIN `role` AS r
+      ON r.`id`  = ur.`role_id`
+  </sql>
+
+  <select id="count" parameterType="map"
+    resultType="long" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.count">
+      <property name="table"  value="user_role"/>
+      <property name="alias"  value="ur"/>
+      <property name="sql"    value="selectUserRole"/>
+    </include>
+  </select>
+
+  <select id="list" parameterType="map"
+    resultMap="UserRoleResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.list">
+      <property name="sql"    value="selectUserRole"/>
+      <property name="alias"  value="ur"/>
+    </include>
+  </select>
+
+  <select id="exist" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.exist">
+      <property name="table" value="user_role"/>
+    </include>
+  </select>
+
+  <select id="existNonDeleted" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.existNonDeleted">
+      <property name="table" value="user_role"/>
+    </include>
+  </select>
+
+  <select id="get" parameterType="map"
+    resultMap="UserRoleResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.get">
+      <property name="sql" value="selectUserRole"/>
+      <property name="alias" value="ur"/>
+    </include>
+  </select>
+
+<!--  <select id="getFor" parameterType="map"-->
+<!--          resultMap="ltd.qubit.commons.dao.mapper.RoleMapper.RoleResultMap"-->
+<!--          resultSetType="FORWARD_ONLY">-->
+<!--    SELECT  r.`id`                         AS `id`,-->
+<!--            a.`id`                         AS `app_id`,-->
+<!--            a.`name`                       AS `app_name`,-->
+<!--            a.`code`                       AS `app_code`,-->
+<!--            r.`code`                       AS `code`,-->
+<!--            r.`name`                       AS `name`,-->
+<!--            r.`description`                AS `description`,-->
+<!--            r.`guest`                      AS `guest`,-->
+<!--            r.`basic`                      AS `basic`,-->
+<!--            r.`privileges`                 AS `privileges`,-->
+<!--            r.`create_time`                AS `create_time`,-->
+<!--            r.`modify_time`                AS `modify_time`,-->
+<!--            r.`delete_time`                AS `delete_time`-->
+<!--    FROM `user_role` AS ur-->
+<!--    JOIN `role`      AS r        ON r.`id` = ur.`role_id`-->
+<!--    JOIN `app`       AS a        ON a.`id` = ur.`app_id`-->
+<!--    WHERE ur.`user_id` = #{userId}-->
+<!--    <if test="appId != null">-->
+<!--      AND ur.`app_id`  = #{appId}-->
+<!--    </if>-->
+<!--      AND ur.`delete_time` IS NULL-->
+<!--    ORDER BY r.`code` ASC-->
+<!--  </select>-->
+
+  <insert id="add" parameterType="ltd.qubit.model.privilege.UserRole">
+    INSERT INTO `user_role` (
+      `id`,
+      `user_id`,
+      `app_id`,
+      `role_id`,
+      `create_time`
+    ) VALUES (
+      #{id},
+      #{user.id},
+      #{app.id},
+      #{role.id},
+      #{createTime}
+    )
+  </insert>
+
+  <update id="delete" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.delete">
+      <property name="table" value="user_role"/>
+    </include>
+  </update>
+
+  <update id="restore" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.restore">
+      <property name="table" value="user_role"/>
+    </include>
+  </update>
+
+  <delete id="purge" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.purge">
+      <property name="table" value="user_role"/>
+    </include>
+  </delete>
+
+  <delete id="purgeAll">
+    <include refid="ltd.qubit.commons.dao.mapper.purgeAll">
+      <property name="table" value="user_role"/>
+    </include>
+  </delete>
+
+  <update id="erase" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.erase">
+      <property name="table" value="user_role"/>
+    </include>
+  </update>
+
+  <delete id="clear">
+    <include refid="ltd.qubit.commons.dao.mapper.clear">
+      <property name="table" value="user_role"/>
+    </include>
+  </delete>
+
+<!--  <update id="deleteFor" parameterType="map">-->
+<!--    UPDATE `user_role`-->
+<!--       SET `delete_time`  = #{deleteTime}-->
+<!--     WHERE `user_id` = #{userId}-->
+<!--    <if test="appId != null">-->
+<!--       AND `app_id`  = #{appId}-->
+<!--    </if>-->
+<!--       AND `delete_time` IS NULL-->
+<!--  </update>-->
+
+<!--  <delete id="purgeFor" parameterType="map">-->
+<!--    DELETE FROM `user_role`-->
+<!--    WHERE `user_id` = #{userId}-->
+<!--    <if test="appId != null">-->
+<!--      AND `app_id`  = #{appId}-->
+<!--    </if>-->
+<!--      AND `delete_time` IS NOT NULL-->
+<!--  </delete>-->
+
+</mapper>

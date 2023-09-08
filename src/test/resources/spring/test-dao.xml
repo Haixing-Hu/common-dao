@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.springframework.org/schema/beans"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
+     http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  <import resource="classpath:spring/common-dao/dao/host-dao.xml"/>
+  <import resource="classpath:spring/common-dao/dao/setting-dao.xml"/>
+  <import resource="classpath:spring/dao/country-dao.xml"/>
+  <import resource="classpath:spring/dao/province-dao.xml"/>
+  <import resource="classpath:spring/dao/city-dao.xml"/>
+  <import resource="classpath:spring/dao/district-dao.xml"/>
+  <import resource="classpath:spring/dao/street-dao.xml"/>
+  <import resource="classpath:spring/dao/payload-dao.xml"/>
+  <import resource="classpath:spring/dao/category-dao.xml"/>
+  <import resource="classpath:spring/dao/upload-dao.xml"/>
+  <import resource="classpath:spring/dao/attachment-dao.xml"/>
+  <import resource="classpath:spring/dao/credential-dao.xml"/>
+  <import resource="classpath:spring/dao/organization-dao.xml"/>
+  <import resource="classpath:spring/dao/app-dao.xml"/>
+  <import resource="classpath:spring/dao/source-dao.xml"/>
+  <import resource="classpath:spring/dao/user-dao.xml"/>
+  <import resource="classpath:spring/dao/person-dao.xml"/>
+  <import resource="classpath:spring/dao/device-dao.xml"/>
+</beans>

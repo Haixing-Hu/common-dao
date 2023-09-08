@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.mapper">
+
+  <resultMap id="EmployeeInfoResultMap"
+    type="ltd.qubit.model.organization.EmployeeInfo">
+    <id property="id"                 column="id"/>
+    <result property="code"           column="code"/>
+    <result property="internalCode"   column="internal_code"/>
+    <result property="username"       column="username"/>
+    <result property="name"           column="name"/>
+    <result property="gender"         column="gender"/>
+    <result property="birthday"       column="birthday"/>
+    <result property="mobile"         column="mobile"/>
+    <result property="state"          column="state"/>
+    <result property="deleteTime"     column="delete_time"/>
+    <association property="credential"
+      javaType="ltd.qubit.model.commons.CredentialInfo"
+      resultMap="ltd.qubit.commons.dao.mapper.CredentialInfoResultMap"
+      columnPrefix="credential_"/>
+    <association property="organization"
+      javaType="ltd.qubit.commons.model.StatefulInfo"
+      resultMap="ltd.qubit.commons.dao.mapper.StatefulInfoResultMap"
+      columnPrefix="organization_"/>
+    <association property="department"
+      javaType="ltd.qubit.commons.model.StatefulInfo"
+      resultMap="ltd.qubit.commons.dao.mapper.StatefulInfoResultMap"
+      columnPrefix="department_"/>
+  </resultMap>
+
+</mapper>

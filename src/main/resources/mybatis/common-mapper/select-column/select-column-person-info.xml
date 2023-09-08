@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.mapper">
+
+  <!--
+    选择 PersonInfo 对象的字段
+
+    == 参数 ==
+    alias:                    PersonInfo 信息所在表的别名，一般是主表关联的 person 表的别名，但也可能是主表的别名
+    columnPrefix:             PersonInfo 信息所在表的字段前缀，一般为 ""
+    asPrefix:                 输出字段的前缀，一般为主表中关联 person 表的字段名 + 下划线
+    credentialAlias:          获取 EmployeeInfo.credential 字段所在表的别名，通常是关联的 credential 表的别名
+    credentialColumnPrefix:   获取 EmployeeInfo.credential 字段所在表的字段前缀，通常是 ""
+  -->
+  <sql id="selectColumnPersonInfo">
+    ${alias}.`${columnPrefix}id`                AS `${asPrefix}id`,
+    ${alias}.`${columnPrefix}name`              AS `${asPrefix}name`,
+    ${alias}.`${columnPrefix}username`          AS `${asPrefix}username`,
+    ${alias}.`${columnPrefix}gender`            AS `${asPrefix}gender`,
+    ${alias}.`${columnPrefix}birthday`          AS `${asPrefix}birthday`,
+    ${alias}.`${columnPrefix}contact_mobile`    AS `${asPrefix}mobile`,
+    ${alias}.`${columnPrefix}contact_email`     AS `${asPrefix}email`,
+    <include refid="ltd.qubit.commons.dao.mapper.selectColumnCredentialInfo">
+      <property name="alias"        value="${credentialAlias}"/>
+      <property name="columnPrefix" value="${credentialColumnPrefix}"/>
+      <property name="asPrefix"     value="${asPrefix}credential_"/>
+    </include>
+  </sql>
+</mapper>

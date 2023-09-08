@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.mapper">
+
+  <!--
+    关联 attachment 表获取 Attachment 对象的字段
+
+    == 参数 ==
+    alias:            主表的别名；
+    type:             主表的类型名，必须为 uppercase underscore 风格
+    property:         主表的属性名，必须为 uppercase underscore 风格
+    attachmentAlias:  关联的 attachment 表的别名
+   -->
+  <sql id="joinAttachment">
+    LEFT JOIN `attachment` AS ${attachmentAlias}
+         ON ${attachmentAlias}.`owner_id`                = ${alias}.`id`
+        AND ${attachmentAlias}.`owner_type`              = '${type}'
+        AND ${attachmentAlias}.`owner_property`          = '${property}'
+        AND ${attachmentAlias}.`delete_time` IS NULL     <!-- 限制只能关联未被删除的附件 -->
+        <!-- FIXME: 是否应限制 index = 0 以确保只能关联一个附件？ -->
+    <include refid="ltd.qubit.commons.dao.mapper.joinUpload">
+      <property name="alias"            value="${attachmentAlias}"/>
+      <property name="uploadAlias"      value="${uploadAlias}"/>
+    </include>
+    <include refid="ltd.qubit.commons.dao.mapper.joinCategory">
+      <property name="alias"            value="${attachmentAlias}"/>
+      <property name="categoryAlias"    value="${categoryAlias}"/>
+    </include>
+  </sql>
+
+</mapper>

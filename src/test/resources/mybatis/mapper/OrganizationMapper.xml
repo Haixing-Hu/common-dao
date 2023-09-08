@@ -1,0 +1,521 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.testbed.mapper.OrganizationMapper">
+
+  <resultMap id="OrganizationResultMap" type="ltd.qubit.model.organization.Organization">
+    <id property="id"                                       column="id"/>
+    <result property="code"                                 column="code"/>
+    <result property="name"                                 column="name"/>
+    <result property="state"                                column="state"/>
+    <result property="icon"                                 column="icon"/>
+    <result property="description"                          column="description"/>
+    <result property="comment"                              column="comment"/>
+    <result property="taxPayerType"                         column="tax_payer_type"/>
+    <result property="taxNumber"                            column="tax_number"/>
+    <result property="predefined"                           column="predefined"/>
+    <result property="createTime"                           column="create_time"/>
+    <result property="modifyTime"                           column="modify_time"/>
+    <result property="deleteTime"                           column="delete_time"/>
+    <association property="category"
+      javaType="ltd.qubit.commons.model.InfoWithEntity"
+      resultMap="ltd.qubit.commons.dao.mapper.InfoWithEntityResultMap"
+      columnPrefix="category_"/>
+    <association property="parent"
+      javaType="ltd.qubit.commons.model.StatefulInfo"
+      resultMap="ltd.qubit.commons.dao.mapper.StatefulInfoResultMap"
+      columnPrefix="parent_"/>
+    <association property="contact"
+      javaType="ltd.qubit.model.contact.Contact"
+      resultMap="ltd.qubit.commons.dao.mapper.ContactResultMap"
+      columnPrefix="contact_"/>
+    <association property="credential"
+      javaType="ltd.qubit.model.commons.CredentialInfo"
+      resultMap="ltd.qubit.commons.dao.mapper.CredentialInfoResultMap"
+      columnPrefix="credential_"/>
+    <association property="principal"
+      javaType="ltd.qubit.model.person.PersonInfo"
+      resultMap="ltd.qubit.commons.dao.mapper.PersonInfoResultMap"
+      columnPrefix="principal_"/>
+    <collection property="licenses" javaType="ArrayList"
+      ofType="ltd.qubit.model.commons.CredentialInfo"
+      column="{owner.type=organization_type_name, owner.id=id, owner.property=licenses_property_name}"
+      select="ltd.qubit.commons.dao.mapper.CredentialMapper.getInfoForOwner"/>
+    <collection property="payloads" javaType="ArrayList"
+      ofType="ltd.qubit.model.commons.Payload"
+      column="{owner.type=organization_type_name, owner.id=id, owner.property=payloads_property_name}"
+      select="ltd.qubit.commons.dao.mapper.PayloadMapper.getForOwner"/>
+  </resultMap>
+
+  <sql id="selectOrganization">
+    SELECT  o.`id`                            AS `id`,
+            o.`code`                          AS `code`,
+            o.`name`                          AS `name`,
+            <include refid="ltd.qubit.commons.dao.mapper.selectColumnInfoWithEntity">
+              <property name="alias"          value="y"/>
+              <property name="columnPrefix"   value=""/>
+              <property name="asPrefix"       value="category_"/>
+            </include>
+            <include refid="ltd.qubit.commons.dao.mapper.selectColumnStatefulInfo">
+              <property name="alias"          value="r"/>
+              <property name="columnPrefix"   value=""/>
+              <property name="asPrefix"       value="parent_"/>
+            </include>
+            o.`state`                         AS `state`,
+            o.`icon`                          AS `icon`,
+            o.`description`                   AS `description`,
+            o.`comment`                       AS `comment`,
+            <include refid="ltd.qubit.commons.dao.mapper.selectColumnCredentialInfo">
+              <property name="alias"          value="cred"/>
+              <property name="columnPrefix"   value=""/>
+              <property name="asPrefix"       value="credential_"/>
+            </include>
+            <include refid="ltd.qubit.commons.dao.mapper.selectColumnContact">
+              <property name="alias"          value="o"/>
+              <property name="countryAlias"   value="t"/>
+              <property name="provinceAlias"  value="p"/>
+              <property name="cityAlias"      value="c"/>
+              <property name="districtAlias"  value="d"/>
+              <property name="streetAlias"    value="s"/>
+              <property name="columnPrefix"   value="contact_"/>
+              <property name="asPrefix"       value="contact_"/>
+            </include>
+            <include refid="ltd.qubit.commons.dao.mapper.selectColumnPersonInfo">
+              <property name="alias"                    value="o"/>
+              <property name="columnPrefix"             value="principal_"/>
+              <property name="credentialAlias"          value="o"/>
+              <property name="credentialColumnPrefix"   value="principal_credential_"/>
+              <property name="asPrefix"                 value="principal_"/>
+            </include>
+            o.`tax_payer_type`                AS `tax_payer_type`,
+            o.`tax_number`                    AS `tax_number`,
+            o.`predefined`                    AS `predefined`,
+            o.`create_time`                   AS `create_time`,
+            o.`modify_time`                   AS `modify_time`,
+            o.`delete_time`                   AS `delete_time`,
+           'ORGANIZATION'                     AS `organization_type_name`,
+           'LICENSES'                         AS `licenses_property_name`,
+           'PAYLOADS'                         AS `payloads_property_name`
+    FROM `organization` AS o
+    <include refid="joinOrganization"/>
+  </sql>
+
+  <sql id="joinOrganization">
+    LEFT JOIN `category`      AS y
+      ON y.`id`       = o.`category_id`
+    LEFT JOIN `organization`  AS r
+      ON r.`id`       = o.`parent_id`
+    <include refid="ltd.qubit.commons.dao.mapper.joinCredential">
+      <property name="alias"                    value="o"/>
+      <property name="type"                     value="ORGANIZATION"/>
+      <property name="property"                 value="CREDENTIAL"/>
+      <property name="credentialAlias"          value="cred"/>
+    </include>
+    <include refid="ltd.qubit.commons.dao.mapper.joinContact">
+      <property name="alias"            value="o"/>
+      <property name="columnPrefix"     value="contact_"/>
+      <property name="countryAlias"     value="t"/>
+      <property name="provinceAlias"    value="p"/>
+      <property name="cityAlias"        value="c"/>
+      <property name="districtAlias"    value="d"/>
+      <property name="streetAlias"      value="s"/>
+    </include>
+  </sql>
+
+  <select id="count" parameterType="map"
+    resultType="long" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.count">
+      <property name="table"  value="organization"/>
+      <property name="alias"  value="o"/>
+      <property name="sql"    value="selectOrganization"/>
+    </include>
+  </select>
+
+  <select id="list" parameterType="map"
+    resultMap="OrganizationResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.list">
+      <property name="sql"    value="selectOrganization"/>
+      <property name="alias"  value="o"/>
+    </include>
+  </select>
+
+  <select id="exist" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.exist">
+      <property name="table" value="organization"/>
+    </include>
+  </select>
+
+  <select id="existNonDeleted" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.existNonDeleted">
+      <property name="table" value="organization"/>
+    </include>
+  </select>
+
+  <select id="existCode" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.existCode">
+      <property name="table" value="organization"/>
+    </include>
+  </select>
+
+  <select id="existName" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.existName">
+      <property name="table" value="organization"/>
+    </include>
+  </select>
+
+  <select id="get" parameterType="map"
+    resultMap="OrganizationResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.get">
+      <property name="sql" value="selectOrganization"/>
+      <property name="alias" value="o"/>
+    </include>
+  </select>
+
+  <select id="getByCode" parameterType="map"
+    resultMap="OrganizationResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getByCode">
+      <property name="sql" value="selectOrganization"/>
+      <property name="alias" value="o"/>
+    </include>
+  </select>
+
+  <select id="getByName" parameterType="map"
+    resultMap="OrganizationResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getByName">
+      <property name="sql" value="selectOrganization"/>
+      <property name="alias" value="o"/>
+    </include>
+  </select>
+
+  <select id="getInfo" parameterType="map"
+    resultMap="ltd.qubit.commons.dao.mapper.StatefulInfoResultMap"
+    resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getStatefulInfo">
+      <property name="table" value="organization"/>
+    </include>
+  </select>
+
+  <select id="getInfoByCode" parameterType="map"
+    resultMap="ltd.qubit.commons.dao.mapper.StatefulInfoResultMap"
+    resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getStatefulInfoByCode">
+      <property name="table" value="organization"/>
+    </include>
+  </select>
+
+  <select id="getInfoByName" parameterType="map"
+    resultMap="ltd.qubit.commons.dao.mapper.StatefulInfoResultMap"
+    resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getStatefulInfoByName">
+      <property name="table" value="organization"/>
+    </include>
+  </select>
+
+  <select id="getIdByCode" parameterType="map"
+    resultType="Long" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getIdByCode">
+      <property name="table" value="organization"/>
+    </include>
+  </select>
+
+  <select id="getIdByName" parameterType="map"
+    resultType="Long" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getIdByName">
+      <property name="table" value="organization"/>
+    </include>
+  </select>
+
+  <select id="getContact" parameterType="map"
+    resultMap="ltd.qubit.commons.dao.mapper.ContactResultMap"
+    resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getContact">
+      <property name="table"          value="organization"/>
+      <property name="columnPrefix"   value="contact_"/>
+    </include>
+  </select>
+
+<!--  <select id="getCredential" parameterType="map"-->
+<!--    resultMap="ltd.qubit.commons.dao.mapper.CredentialInfoResultMap"-->
+<!--    resultSetType="FORWARD_ONLY">-->
+<!--    SELECT-->
+<!--    <include refid="ltd.qubit.commons.dao.mapper.selectColumnCredentialInfo">-->
+<!--      <property name="alias"          value="c"/>-->
+<!--      <property name="columnPrefix"   value=""/>-->
+<!--      <property name="asPrefix"       value=""/>-->
+<!--    </include>-->
+<!--    1 FROM `organization` AS o-->
+<!--    JOIN `credential`  AS c-->
+<!--         ON c.`owner_type`      = 'ORGANIZATION'-->
+<!--        AND c.`owner_id`        = o.`id`-->
+<!--        AND c.`owner_property`  = 'credential'-->
+<!--    WHERE o.`id` = #{id}-->
+<!--    LIMIT 1-->
+<!--  </select>-->
+
+<!--  <select id="getCredentialId" parameterType="map" resultType="long"-->
+<!--          resultSetType="FORWARD_ONLY">-->
+<!--    SELECT c.`id`-->
+<!--    FROM `organization` AS o-->
+<!--    JOIN `credential`  AS c-->
+<!--       ON c.`owner_type`      = 'ORGANIZATION'-->
+<!--      AND c.`owner_id`        = o.`id`-->
+<!--      AND c.`owner_property`  = 'credential'-->
+<!--    WHERE o.`id` = #{id}-->
+<!--    LIMIT 1-->
+<!--  </select>-->
+
+  <insert id="add" parameterType="ltd.qubit.model.organization.Organization">
+    INSERT INTO `organization` (
+      `id`,
+      `code`,
+      `name`,
+      `category_id`,
+      `parent_id`,
+      `state`,
+      `icon`,
+      `description`,
+      `comment`,
+    <include refid="ltd.qubit.commons.dao.mapper.insertColumnContact">
+      <property name="prefix"  value="contact_"/>
+    </include>
+    <include refid="ltd.qubit.commons.dao.mapper.insertColumnPersonInfo">
+      <property name="prefix"  value="principal_"/>
+    </include>
+      `tax_payer_type`,
+      `tax_number`,
+      `predefined`,
+      `create_time`
+    ) VALUES (
+      #{id},
+      #{code},
+      #{name},
+      #{category.id},
+      #{parent.id},
+      #{state},
+      #{icon},
+      #{description},
+      #{comment},
+    <include refid="ltd.qubit.commons.dao.mapper.insertValueContact">
+      <property name="prefix"  value="contact."/>
+    </include>
+    <include refid="ltd.qubit.commons.dao.mapper.insertValuePersonInfo">
+      <property name="prefix"  value="principal."/>
+    </include>
+      #{taxPayerType},
+      #{taxNumber},
+      #{predefined},
+      #{createTime}
+    )
+  </insert>
+
+  <sql id="updateOrganization">
+    UPDATE `organization`
+    SET   `name`                        = #{name},
+          `category_id`                 = #{category.id},
+          `icon`                        = #{icon},
+          `description`                 = #{description},
+          `tax_payer_type`              = #{taxPayerType},
+          `tax_number`                  = #{taxNumber},
+          `modify_time`                 = #{modifyTime}
+  </sql>
+
+  <update id="update" parameterType="ltd.qubit.model.organization.Organization">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeleted">
+      <property name="sql" value="updateOrganization"/>
+    </include>
+  </update>
+
+  <update id="updateByCode" parameterType="ltd.qubit.model.organization.Organization">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedByCode">
+      <property name="sql" value="updateOrganization"/>
+    </include>
+  </update>
+
+  <update id="updateByName" parameterType="ltd.qubit.model.organization.Organization">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedByName">
+      <property name="sql" value="updateOrganization"/>
+    </include>
+  </update>
+
+  <update id="updateState" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedState">
+      <property name="table" value="organization"/>
+    </include>
+  </update>
+
+  <update id="updateStateByCode" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedStateByCode">
+      <property name="table" value="organization"/>
+    </include>
+  </update>
+
+  <update id="updateStateByName" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedStateByName">
+      <property name="table" value="organization"/>
+    </include>
+  </update>
+
+  <update id="updateComment" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedComment">
+      <property name="table" value="organization"/>
+    </include>
+  </update>
+
+  <update id="updateCommentByCode" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedCommentByCode">
+      <property name="table" value="organization"/>
+    </include>
+  </update>
+
+  <update id="updateContact" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedContact">
+      <property name="table"  value="organization"/>
+      <property name="columnPrefix" value="contact_"/>
+      <property name="propertyPrefix" value=""/>
+    </include>
+  </update>
+
+  <update id="updateContactByCode" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedContactByCode">
+      <property name="table"  value="organization"/>
+      <property name="columnPrefix" value="contact_"/>
+      <property name="propertyPrefix" value=""/>
+    </include>
+  </update>
+
+  <update id="updatePrincipal"
+    parameterType="ltd.qubit.model.organization.Organization">
+    UPDATE `organization`
+       SET <include refid="ltd.qubit.commons.dao.mapper.updateSetPersonInfo">
+             <property name="columnPrefix"   value="principal_"/>
+             <property name="propertyPrefix" value="principal."/>
+           </include>
+          `modify_time`                      = #{modifyTime}
+    WHERE `id` = #{id}
+      AND `delete_time` IS NULL
+  </update>
+
+  <update id="updatePrincipalByCode"
+    parameterType="ltd.qubit.model.organization.Organization">
+    UPDATE `organization`
+    SET <include refid="ltd.qubit.commons.dao.mapper.updateSetPersonInfo">
+          <property name="columnPrefix"   value="principal_"/>
+          <property name="propertyPrefix" value="principal."/>
+        </include>
+        `modify_time`                      = #{modifyTime}
+        WHERE `code` = #{code}
+          AND `delete_time` IS NULL
+  </update>
+
+  <!--  <update id="updateParent" parameterType="map">-->
+  <!--    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedParent">-->
+  <!--      <property name="table"  value="organization"/>-->
+  <!--    </include>-->
+  <!--  </update>-->
+
+<!--  <update id="updateCredentialId" parameterType="map">-->
+<!--    UPDATE `organization`-->
+<!--    SET   `credential_id`               = #{credentialId},-->
+<!--          `modify_time`                 = #{modifyTime}-->
+<!--    WHERE `id` = #{id}-->
+<!--      AND `delete_time` IS NULL-->
+<!--  </update>-->
+
+  <update id="delete" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.delete">
+      <property name="table" value="organization"/>
+    </include>
+  </update>
+
+  <update id="restore" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.restore">
+      <property name="table" value="organization"/>
+    </include>
+  </update>
+
+  <delete id="purge" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.purge">
+      <property name="table" value="organization"/>
+    </include>
+  </delete>
+
+  <delete id="purgeAll">
+    <include refid="ltd.qubit.commons.dao.mapper.purgeAll">
+      <property name="table" value="organization"/>
+    </include>
+  </delete>
+
+  <delete id="erase" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.erase">
+      <property name="table" value="organization"/>
+    </include>
+  </delete>
+
+  <delete id="clear">
+    <include refid="ltd.qubit.commons.dao.mapper.clear">
+      <property name="table" value="organization"/>
+    </include>
+  </delete>
+
+  <update id="deleteByCode" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.deleteByCode">
+      <property name="table" value="organization"/>
+    </include>
+  </update>
+
+  <update id="restoreByCode" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.restoreByCode">
+      <property name="table" value="organization"/>
+    </include>
+  </update>
+
+  <delete id="purgeByCode" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.purgeByCode">
+      <property name="table" value="organization"/>
+    </include>
+  </delete>
+
+  <delete id="eraseByCode" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.eraseByCode">
+      <property name="table" value="organization"/>
+    </include>
+  </delete>
+
+  <update id="deleteByName" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.deleteByName">
+      <property name="table" value="organization"/>
+    </include>
+  </update>
+
+  <update id="restoreByName" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.restoreByName">
+      <property name="table" value="organization"/>
+    </include>
+  </update>
+
+  <delete id="purgeByName" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.purgeByName">
+      <property name="table" value="organization"/>
+    </include>
+  </delete>
+
+  <delete id="eraseByName" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.eraseByName">
+      <property name="table" value="organization"/>
+    </include>
+  </delete>
+</mapper>

@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.testbed.mapper.DistrictMapper">
+
+  <resultMap id="DistrictResultMap" type="ltd.qubit.model.contact.District">
+    <id property="id"                   column="id"/>
+    <result property="code"             column="code"/>
+    <result property="name"             column="name"/>
+    <result property="level"            column="level"/>
+    <result property="postalcode"       column="postalcode"/>
+    <result property="icon"             column="icon"/>
+    <result property="url"              column="url"/>
+    <result property="description"      column="description"/>
+    <result property="predefined"       column="predefined"/>
+    <result property="createTime"       column="create_time"/>
+    <result property="modifyTime"       column="modify_time"/>
+    <result property="deleteTime"       column="delete_time"/>
+    <association property="city"
+      javaType="ltd.qubit.commons.model.Info"
+      resultMap="ltd.qubit.commons.dao.mapper.InfoResultMap"
+      columnPrefix="city_"/>
+    <association property="location"
+      javaType="ltd.qubit.model.contact.Location"
+      resultMap="ltd.qubit.commons.dao.mapper.LocationResultMap"
+      columnPrefix="location_"/>
+  </resultMap>
+
+  <sql id="selectDistrict">
+    SELECT  d.`id`                AS `id`,
+            d.`code`              AS `code`,
+            d.`name`              AS `name`,
+            c.`id`                AS `city_id`,
+            c.`code`              AS `city_code`,
+            c.`name`              AS `city_name`,
+            c.`delete_time`       AS `city_delete_time`,
+            d.`level`             AS `level`,
+            d.`postalcode`        AS `postalcode`,
+            d.`icon`              AS `icon`,
+            d.`url`               AS `url`,
+            d.`description`       AS `description`,
+            d.`latitude`          AS `location_latitude`,
+            d.`longitude`         AS `location_longitude`,
+            d.`predefined`        AS `predefined`,
+            d.`create_time`       AS `create_time`,
+            d.`modify_time`       AS `modify_time`,
+            d.`delete_time`       AS `delete_time`
+    FROM `district` AS d
+    JOIN `city` AS c ON c.`id` = d.`city_id`
+  </sql>
+
+  <select id="count" parameterType="map"
+    resultType="long" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.count">
+      <property name="table"  value="district"/>
+      <property name="alias"  value="d"/>
+      <property name="sql"    value="selectDistrict"/>
+    </include>
+  </select>
+
+  <select id="list" parameterType="map"
+    resultMap="DistrictResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.list">
+      <property name="sql"    value="selectDistrict"/>
+      <property name="alias"  value="d"/>
+    </include>
+  </select>
+
+  <select id="exist" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.exist">
+      <property name="table" value="district"/>
+    </include>
+  </select>
+
+  <select id="existNonDeleted" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.existNonDeleted">
+      <property name="table" value="district"/>
+    </include>
+  </select>
+
+  <select id="existCode" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.existCode">
+      <property name="table" value="district"/>
+    </include>
+  </select>
+
+  <select id="existName" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.existParentName">
+      <property name="table"          value="district"/>
+      <property name="parentTable"    value="city"/>
+      <property name="parentIdColumn" value="city_id"/>
+    </include>
+  </select>
+
+  <select id="get" parameterType="map"
+    resultMap="DistrictResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.get">
+      <property name="sql"            value="selectDistrict"/>
+      <property name="alias"          value="d"/>
+    </include>
+  </select>
+
+  <select id="getByCode" parameterType="map"
+    resultMap="DistrictResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getByCode">
+      <property name="sql"            value="selectDistrict"/>
+      <property name="alias"          value="d"/>
+    </include>
+  </select>
+
+  <select id="getByName" parameterType="map"
+    resultMap="DistrictResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getByParentName">
+      <property name="sql"            value="selectDistrict"/>
+      <property name="alias"          value="d"/>
+      <property name="parentAlias"    value="c"/>
+    </include>
+  </select>
+
+  <select id="getInfo" parameterType="map"
+    resultMap="ltd.qubit.commons.dao.mapper.InfoResultMap"
+    resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getInfo">
+      <property name="table"          value="district"/>
+    </include>
+  </select>
+
+  <select id="getInfoByCode" parameterType="map"
+    resultMap="ltd.qubit.commons.dao.mapper.InfoResultMap"
+    resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getInfoByCode">
+      <property name="table"          value="district"/>
+    </include>
+  </select>
+
+  <select id="getInfoByName" parameterType="map"
+    resultMap="ltd.qubit.commons.dao.mapper.InfoResultMap"
+    resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getInfoByParentName">
+      <property name="table"          value="district"/>
+      <property name="parentTable"    value="city"/>
+      <property name="parentIdColumn" value="city_id"/>
+    </include>
+  </select>
+
+  <select id="getIdByCode" parameterType="map"
+    resultType="Long" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getIdByCode">
+      <property name="table"          value="district"/>
+    </include>
+  </select>
+
+  <select id="getIdByName" parameterType="map"
+    resultType="Long" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getIdByParentName">
+      <property name="table"          value="district"/>
+      <property name="parentTable"    value="city"/>
+      <property name="parentIdColumn" value="city_id"/>
+    </include>
+  </select>
+
+  <insert id="add" parameterType="ltd.qubit.model.contact.District">
+    INSERT INTO `district` (
+        `id`,
+        `code`,
+        `name`,
+        `city_id`,
+        `level`,
+        `postalcode`,
+        `icon`,
+        `url`,
+        `description`,
+        `latitude`,
+        `longitude`,
+        `predefined`,
+        `create_time`
+    ) VALUES (
+        #{id},
+        #{code},
+        #{name},
+        #{city.id},
+        #{level},
+        #{postalcode},
+        #{icon},
+        #{url},
+        #{description},
+        #{location.latitude},
+        #{location.longitude},
+        #{predefined},
+        #{createTime}
+    )
+  </insert>
+
+  <sql id="updateDistrict">
+    UPDATE `district`
+    SET   `name`          = #{name},
+          `city_id`       = #{city.id},
+          `level`         = #{level},
+          `postalcode`    = #{postalcode},
+          `icon`          = #{icon},
+          `url`           = #{url},
+          `description`   = #{description},
+          `latitude`      = #{location.latitude},
+          `longitude`     = #{location.longitude},
+          `predefined`    = #{predefined},
+          `modify_time`   = #{modifyTime}
+  </sql>
+
+  <update id="update" parameterType="ltd.qubit.model.contact.District">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeleted">
+      <property name="sql" value="updateDistrict"/>
+    </include>
+  </update>
+
+  <update id="updateByCode" parameterType="ltd.qubit.model.contact.District">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedByCode">
+      <property name="sql" value="updateDistrict"/>
+    </include>
+  </update>
+
+  <update id="updateByName" parameterType="ltd.qubit.model.contact.District">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedByParentName">
+      <property name="sql"              value="updateDistrict"/>
+      <property name="parentIdColumn"   value="city_id"/>
+      <property name="parentIdProperty" value="city.id"/>
+    </include>
+  </update>
+
+  <update id="delete" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.delete">
+      <property name="table"          value="district"/>
+    </include>
+  </update>
+
+  <update id="deleteByCode" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.deleteByCode">
+      <property name="table"          value="district"/>
+    </include>
+  </update>
+
+  <update id="deleteByName" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.deleteByParentName">
+      <property name="table"          value="district"/>
+      <property name="parentIdColumn" value="city_id"/>
+    </include>
+  </update>
+
+  <update id="restore" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.restore">
+      <property name="table"          value="district"/>
+    </include>
+  </update>
+
+  <update id="restoreByCode" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.restoreByCode">
+      <property name="table"          value="district"/>
+    </include>
+  </update>
+
+  <update id="restoreByName" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.restoreByParentName">
+      <property name="table"          value="district"/>
+      <property name="parentIdColumn" value="city_id"/>
+    </include>
+  </update>
+
+  <delete id="purge" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.purge">
+      <property name="table"          value="district"/>
+    </include>
+  </delete>
+
+  <delete id="purgeByCode" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.purgeByCode">
+      <property name="table"          value="district"/>
+    </include>
+  </delete>
+
+  <delete id="purgeByName" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.purgeByParentName">
+      <property name="table"          value="district"/>
+      <property name="parentIdColumn" value="city_id"/>
+    </include>
+  </delete>
+
+  <delete id="purgeAll">
+    <include refid="ltd.qubit.commons.dao.mapper.purgeAll">
+      <property name="table"          value="district"/>
+    </include>
+  </delete>
+
+  <update id="erase" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.erase">
+      <property name="table"          value="district"/>
+    </include>
+  </update>
+
+  <update id="eraseByCode" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.eraseByCode">
+      <property name="table"          value="district"/>
+    </include>
+  </update>
+
+  <delete id="eraseByName" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.eraseByParentName">
+      <property name="table"          value="district"/>
+      <property name="parentIdColumn" value="city_id"/>
+    </include>
+  </delete>
+
+  <delete id="clear">
+    <include refid="ltd.qubit.commons.dao.mapper.clear">
+      <property name="table"          value="district"/>
+    </include>
+  </delete>
+</mapper>

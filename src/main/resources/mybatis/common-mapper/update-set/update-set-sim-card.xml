@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.mapper">
+
+  <sql id="updateSetSimCard">
+    `${columnPrefix}iccid`            =   #{${propertyPrefix}iccid},
+    `${columnPrefix}imei`             =   #{${propertyPrefix}imei},
+    `${columnPrefix}meid`             =   #{${propertyPrefix}meid},
+    `${columnPrefix}phone`            =   #{${propertyPrefix}phone},
+    `${columnPrefix}operator`         =   #{${propertyPrefix}operator},
+    `${columnPrefix}country_id`       =   #{${propertyPrefix}country.id},
+    <include refid="ltd.qubit.commons.dao.mapper.updateSetLocation">
+      <property name="columnPrefix"   value="${columnPrefix}location_"/>
+      <property name="propertyPrefix" value="${propertyPrefix}location."/>
+    </include>
+    `${columnPrefix}network_type`     =   #{${propertyPrefix}networkType},
+    `${columnPrefix}status`           =   #{${propertyPrefix}status},
+  </sql>
+
+</mapper>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.mapper">
+
+  <!--
+    返回符合条件的结果的数量
+
+    SQL片段参数
+    ==========
+    sql:          用于从主表及其连接表查询实体对象属性的SQL片段ID
+    alias:        主表的别名
+
+    Mapper参数
+    =========
+    filter:       条件过滤器
+    sortRequest:  排序要求
+    limit:        返回的结果列表的长度
+    offset:       返回的第一个结果在所有结果列表中的偏移量，从0开始计数
+  -->
+  <sql id="list">
+    <!--
+      为了能在 WHERE 语句中使用自定义的列别名，我们需要将整个查询语句包含在一个子查询中。
+      例如：
+      SELECT * FROM (
+         SELECT o.`id`     AS `id`
+                a.`name`   AS `app_name`
+         FROM `organization` AS o
+           JOIN `app` AS a
+            ON o.`app_id` = a.`id`
+      ) AS __select_result__
+      WHERE __select_result__.`app_name` like '%app%'
+    -->
+    SELECT * FROM (
+      <include refid="${sql}"/>
+    ) AS __select_result__
+    <include refid="ltd.qubit.commons.dao.mapper.filter">
+      <property name="alias" value="__select_result__"/>
+    </include>
+    <include refid="ltd.qubit.commons.dao.mapper.sort">
+      <property name="alias" value="__select_result__"/>
+    </include>
+    <include refid="ltd.qubit.commons.dao.mapper.limitOffset"/>
+  </sql>
+
+</mapper>

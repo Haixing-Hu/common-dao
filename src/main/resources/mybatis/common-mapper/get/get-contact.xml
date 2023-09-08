@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.mapper">
+
+  <!-- 根据ID获取对象的联系方式，返回 Contact 对象 -->
+  <sql id="getContact">
+    SELECT
+    <include refid="ltd.qubit.commons.dao.mapper.selectColumnContact">
+      <property name="alias"          value="t"/>
+      <property name="columnPrefix"   value="${columnPrefix}"/>
+      <property name="asPrefix"       value=""/>
+      <property name="countryAlias"   value="contact_country"/>
+      <property name="provinceAlias"  value="contact_province"/>
+      <property name="cityAlias"      value="contact_city"/>
+      <property name="districtAlias"  value="contact_district"/>
+      <property name="streetAlias"    value="contact_street"/>
+    </include>
+    1 FROM `${table}` AS t
+    <include refid="ltd.qubit.commons.dao.mapper.joinContact">
+      <property name="alias"          value="t"/>
+      <property name="columnPrefix"   value="${columnPrefix}"/>
+      <property name="countryAlias"   value="contact_country"/>
+      <property name="provinceAlias"  value="contact_province"/>
+      <property name="cityAlias"      value="contact_city"/>
+      <property name="districtAlias"  value="contact_district"/>
+      <property name="streetAlias"    value="contact_street"/>
+    </include>
+    WHERE t.`id` = #{id}
+    LIMIT 1
+  </sql>
+
+</mapper>

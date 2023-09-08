@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.testbed.mapper.DictMapper">
+
+  <resultMap id="DictResultMap" type="ltd.qubit.model.commons.Dict">
+    <id property="id"                   column="id"/>
+    <result property="code"             column="code"/>
+    <result property="name"             column="name"/>
+    <result property="standardDoc"      column="standard_doc"/>
+    <result property="standardCode"     column="standard_code"/>
+    <result property="url"              column="url"/>
+    <result property="description"      column="description"/>
+    <result property="comment"          column="comment"/>
+    <result property="state"            column="state"/>
+    <result property="predefined"       column="predefined"/>
+    <result property="createTime"       column="create_time"/>
+    <result property="modifyTime"       column="modify_time"/>
+    <result property="deleteTime"       column="delete_time"/>
+    <association property="app"
+      javaType="ltd.qubit.commons.model.StatefulInfo"
+      resultMap="ltd.qubit.commons.dao.mapper.StatefulInfoResultMap"
+      columnPrefix="app_"/>
+    <association property="category"
+      javaType="ltd.qubit.commons.model.InfoWithEntity"
+      resultMap="ltd.qubit.commons.dao.mapper.InfoWithEntityResultMap"
+      columnPrefix="category_"/>
+  </resultMap>
+
+  <sql id="selectDict">
+    SELECT  d.`id`                AS `id`,
+            d.`code`              AS `code`,
+            d.`name`              AS `name`,
+            d.`standard_doc`      AS `standard_doc`,
+            d.`standard_code`     AS `standard_code`,
+            d.`url`               AS `url`,
+            d.`description`       AS `description`,
+            d.`comment`           AS `comment`,
+            <include refid="ltd.qubit.commons.dao.mapper.selectColumnStatefulInfo">
+              <property name="alias"          value="a"/>
+              <property name="columnPrefix"   value=""/>
+              <property name="asPrefix"       value="app_"/>
+            </include>
+            <include refid="ltd.qubit.commons.dao.mapper.selectColumnInfoWithEntity">
+              <property name="alias"          value="c"/>
+              <property name="columnPrefix"   value=""/>
+              <property name="asPrefix"       value="category_"/>
+            </include>
+            d.`state`             AS `state`,
+            d.`predefined`        AS `predefined`,
+            d.`create_time`       AS `create_time`,
+            d.`modify_time`       AS `modify_time`,
+            d.`delete_time`       AS `delete_time`
+    FROM `dict` AS d
+    LEFT JOIN `app` AS a ON a.`id` = d.`app_id`
+    LEFT JOIN `category` AS c ON c.`id` = d.`category_id`
+  </sql>
+
+  <select id="count" parameterType="map"
+    resultType="long" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.count">
+      <property name="table"  value="dict"/>
+      <property name="alias"  value="d"/>
+      <property name="sql"    value="selectDict"/>
+    </include>
+  </select>
+
+  <select id="list" parameterType="map"
+    resultMap="DictResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.list">
+      <property name="sql"    value="selectDict"/>
+      <property name="alias"  value="d"/>
+    </include>
+  </select>
+
+  <select id="exist" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.exist">
+      <property name="table" value="dict"/>
+    </include>
+  </select>
+
+  <select id="existNonDeleted" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.existNonDeleted">
+      <property name="table" value="dict"/>
+    </include>
+  </select>
+
+  <select id="existCode" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.existCode">
+      <property name="table" value="dict"/>
+    </include>
+  </select>
+
+  <select id="get" parameterType="map"
+    resultMap="DictResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.get">
+      <property name="sql" value="selectDict"/>
+      <property name="alias" value="d"/>
+    </include>
+  </select>
+
+  <select id="getByCode" parameterType="map"
+    resultMap="DictResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getByCode">
+      <property name="sql" value="selectDict"/>
+      <property name="alias" value="d"/>
+    </include>
+  </select>
+
+  <select id="getInfo" parameterType="map"
+    resultMap="ltd.qubit.commons.dao.mapper.StatefulInfoResultMap"
+    resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getStatefulInfo">
+      <property name="table" value="dict"/>
+    </include>
+  </select>
+
+  <select id="getInfoByCode" parameterType="map"
+    resultMap="ltd.qubit.commons.dao.mapper.StatefulInfoResultMap"
+    resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getStatefulInfoByCode">
+      <property name="table" value="dict"/>
+    </include>
+  </select>
+
+  <select id="getIdByCode" parameterType="map"
+    resultType="Long" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getIdByCode">
+      <property name="table" value="dict"/>
+    </include>
+  </select>
+
+  <insert id="add" parameterType="ltd.qubit.model.commons.Dict">
+    INSERT INTO `dict` (
+        `id`,
+        `code`,
+        `name`,
+        `standard_doc`,
+        `standard_code`,
+        `url`,
+        `description`,
+        `comment`,
+        `app_id`,
+        `category_id`,
+        `state`,
+        `predefined`,
+        `create_time`
+    ) VALUES (
+        #{id},
+        #{code},
+        #{name},
+        #{standardDoc},
+        #{standardCode},
+        #{url},
+        #{description},
+        #{comment},
+        #{app.id},
+        #{category.id},
+        #{state},
+        #{predefined},
+        #{createTime}
+    )
+  </insert>
+
+  <sql id="updateDict">
+    UPDATE `dict`
+    SET   `name`          = #{name},
+          `standard_doc`  = #{standardDoc},
+          `standard_code` = #{standardCode},
+          `url`           = #{url},
+          `description`   = #{description},
+          `category_id`   = #{category.id},
+          `modify_time`   = #{modifyTime}
+  </sql>
+
+  <update id="update" parameterType="ltd.qubit.model.commons.App">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeleted">
+      <property name="sql" value="updateDict"/>
+    </include>
+  </update>
+
+  <update id="updateByCode" parameterType="ltd.qubit.model.commons.App">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedByCode">
+      <property name="sql" value="updateDict"/>
+    </include>
+  </update>
+
+  <update id="updateComment" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedComment">
+      <property name="table" value="dict"/>
+    </include>
+  </update>
+
+  <update id="updateCommentByCode" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedCommentByCode">
+      <property name="table" value="dict"/>
+    </include>
+  </update>
+
+  <update id="updateState" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedState">
+      <property name="table" value="dict"/>
+    </include>
+  </update>
+
+  <update id="updateStateByCode" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedStateByCode">
+      <property name="table" value="dict"/>
+    </include>
+  </update>
+
+  <update id="delete" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.delete">
+      <property name="table" value="dict"/>
+    </include>
+  </update>
+
+  <update id="restore" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.restore">
+      <property name="table" value="dict"/>
+    </include>
+  </update>
+
+  <delete id="purge" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.purge">
+      <property name="table" value="dict"/>
+    </include>
+  </delete>
+
+  <delete id="purgeAll">
+    <include refid="ltd.qubit.commons.dao.mapper.purgeAll">
+      <property name="table" value="dict"/>
+    </include>
+  </delete>
+
+  <delete id="erase">
+    <include refid="ltd.qubit.commons.dao.mapper.erase">
+      <property name="table" value="dict"/>
+    </include>
+  </delete>
+
+  <delete id="clear">
+    <include refid="ltd.qubit.commons.dao.mapper.clear">
+      <property name="table" value="dict"/>
+    </include>
+  </delete>
+
+  <update id="deleteByCode" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.deleteByCode">
+      <property name="table" value="dict"/>
+    </include>
+  </update>
+
+  <update id="restoreByCode" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.restoreByCode">
+      <property name="table" value="dict"/>
+    </include>
+  </update>
+
+  <delete id="purgeByCode" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.purgeByCode">
+      <property name="table" value="dict"/>
+    </include>
+  </delete>
+
+  <delete id="eraseByCode" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.eraseByCode">
+      <property name="table" value="dict"/>
+    </include>
+  </delete>
+</mapper>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.mapper">
+
+  <sql id="updateSetContact">
+    `${columnPrefix}phone`                       = #{${propertyPrefix}phone},
+    `${columnPrefix}phone_verified`              = #{${propertyPrefix}phoneVerified},
+    `${columnPrefix}mobile`                      = #{${propertyPrefix}mobile},
+    `${columnPrefix}mobile_verified`             = #{${propertyPrefix}mobileVerified},
+    `${columnPrefix}email`                       = #{${propertyPrefix}email},
+    `${columnPrefix}email_verified`              = #{${propertyPrefix}emailVerified},
+    `${columnPrefix}url`                         = #{${propertyPrefix}url},
+    <include refid="ltd.qubit.commons.dao.mapper.updateSetAddress">
+      <property name="columnPrefix"   value="${columnPrefix}address_"/>
+      <property name="propertyPrefix" value="${propertyPrefix}address."/>
+    </include>
+    `${columnPrefix}address_verified`            = #{${propertyPrefix}addressVerified},
+  </sql>
+
+</mapper>

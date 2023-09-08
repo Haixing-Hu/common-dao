@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.testbed.mapper.UploadMapper">
+
+  <sql id="selectUpload">
+    SELECT <include refid="ltd.qubit.commons.dao.mapper.selectColumnUpload">
+             <property name="uploadAlias"   value="u"/>
+             <property name="columnPrefix"  value=""/>
+             <property name="asPrefix"      value=""/>
+           </include>
+    1 FROM `upload` AS u       <!-- 加上 1 解决上述include片段最后一个逗号问题 -->
+  </sql>
+
+  <select id="count" parameterType="map"
+    resultType="long" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.count">
+      <property name="table"  value="upload"/>
+      <property name="alias"  value="u"/>
+      <property name="sql"    value="selectUpload"/>
+    </include>
+  </select>
+
+  <select id="list" parameterType="map"
+    resultMap="ltd.qubit.commons.dao.mapper.UploadResultMap"
+    resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.list">
+      <property name="sql"    value="selectUpload"/>
+      <property name="alias"  value="u"/>
+    </include>
+  </select>
+
+  <select id="exist" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.exist">
+      <property name="table" value="upload"/>
+    </include>
+  </select>
+
+  <select id="existNonDeleted" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.existNonDeleted">
+      <property name="table" value="upload"/>
+    </include>
+  </select>
+
+  <select id="get" parameterType="map"
+    resultMap="ltd.qubit.commons.dao.mapper.UploadResultMap"
+    resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.get">
+      <property name="sql" value="selectUpload"/>
+      <property name="alias" value="u"/>
+    </include>
+  </select>
+
+  <select id="getByPath" parameterType="map"
+    resultMap="ltd.qubit.commons.dao.mapper.UploadResultMap"
+    resultSetType="FORWARD_ONLY">
+    <include refid="selectUpload"/>
+    WHERE u.`file_path`             = #{path}
+       OR u.`screenshot_path`       = #{path}
+       OR u.`small_thumbnail_path`  = #{path}
+       OR u.`large_thumbnail_path`  = #{path}
+    LIMIT 1
+  </select>
+
+  <select id="getByAttachmentId" parameterType="map"
+    resultMap="ltd.qubit.commons.dao.mapper.UploadResultMap"
+    resultSetType="FORWARD_ONLY">
+    <include refid="selectUpload"/>
+    JOIN `attachment` AS a ON a.`upload_id` = u.`id`
+    WHERE a.`id` = #{attachmentId}
+    LIMIT 1
+  </select>
+
+  <insert id="add" parameterType="ltd.qubit.model.upload.Upload">
+    INSERT INTO `upload` (
+        `id`,
+        `original_filename`,
+        `type`,
+        <include refid="ltd.qubit.commons.dao.mapper.insertColumnFileInfo">
+          <property name="prefix" value="file_"/>
+        </include>
+        <include refid="ltd.qubit.commons.dao.mapper.insertColumnFileInfo">
+          <property name="prefix" value="screenshot_"/>
+        </include>
+        <include refid="ltd.qubit.commons.dao.mapper.insertColumnFileInfo">
+          <property name="prefix" value="small_thumbnail_"/>
+        </include>
+        <include refid="ltd.qubit.commons.dao.mapper.insertColumnFileInfo">
+          <property name="prefix" value="large_thumbnail_"/>
+        </include>
+        `create_time`
+    ) VALUES (
+        #{id},
+        #{originalFilename},
+        #{type},
+        <include refid="ltd.qubit.commons.dao.mapper.insertValueFileInfo">
+          <property name="prefix" value="file."/>
+        </include>
+        <include refid="ltd.qubit.commons.dao.mapper.insertValueFileInfo">
+          <property name="prefix" value="screenshot."/>
+        </include>
+        <include refid="ltd.qubit.commons.dao.mapper.insertValueFileInfo">
+          <property name="prefix" value="smallThumbnail."/>
+        </include>
+        <include refid="ltd.qubit.commons.dao.mapper.insertValueFileInfo">
+          <property name="prefix" value="largeThumbnail."/>
+        </include>
+        #{createTime}
+    )
+  </insert>
+
+  <update id="delete" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.delete">
+      <property name="table" value="upload"/>
+    </include>
+  </update>
+
+  <update id="restore" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.restore">
+      <property name="table" value="upload"/>
+    </include>
+  </update>
+
+  <delete id="purge" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.purge">
+      <property name="table" value="upload"/>
+    </include>
+  </delete>
+
+  <delete id="purgeAll">
+    <include refid="ltd.qubit.commons.dao.mapper.purgeAll">
+      <property name="table" value="upload"/>
+    </include>
+  </delete>
+
+  <update id="erase" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.erase">
+      <property name="table" value="upload"/>
+    </include>
+  </update>
+
+  <delete id="clear">
+    <include refid="ltd.qubit.commons.dao.mapper.clear">
+      <property name="table" value="upload"/>
+    </include>
+  </delete>
+</mapper>

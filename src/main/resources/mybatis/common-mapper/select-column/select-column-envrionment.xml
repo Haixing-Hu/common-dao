@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.mapper">
+
+  <sql id="selectColumnEnvironment">
+    ${alias}.`${columnPrefix}ip`                AS `${asPrefix}ip`,
+    ${alias}.`${columnPrefix}platform`          AS `${asPrefix}platform`,
+    ${alias}.`${columnPrefix}udid`              AS `${asPrefix}udid`,
+    ${alias}.`${columnPrefix}push_token`        AS `${asPrefix}push_token`,
+    <include refid="ltd.qubit.commons.dao.mapper.selectColumnLocation">
+      <property name="alias" value="${alias}"/>
+      <property name="columnPrefix" value="${columnPrefix}location_"/>
+      <property name="asPrefix" value="${asPrefix}location_"/>
+    </include>
+  </sql>
+</mapper>

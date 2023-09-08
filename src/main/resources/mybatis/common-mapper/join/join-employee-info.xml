@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.mapper">
+
+  <!--
+    关联 employee 表获取 EmployeeInfo 对象的字段
+
+    == 参数 ==
+    alias:                      主表的别名
+    joinColumn:                 主表关联 employee 表的列名
+    employeeAlias:              主表属性关联的 employee 表的别名
+    employeeCredentialAlias:    employee.credential 关联的 credential 表的别名
+    employeeOrganizationAlias:  employee.organization 关联的 organization 表的别名
+    employeeDepartmentAlias:    employee.department 关联的 department 表的别名
+  -->
+  <sql id="joinEmployeeInfo">
+    LEFT JOIN `employee`                        AS ${employeeAlias}
+           ON ${employeeAlias}.`id`             = ${alias}.`${joinColumn}`
+          <!-- FIXME: 是否应限制 employee 未被标记删除? -->
+    <include refid="ltd.qubit.commons.dao.mapper.joinCredential">
+      <property name="alias"                    value="${employeeAlias}"/>
+      <property name="type"                     value="EMPLOYEE"/>
+      <property name="property"                 value="CREDENTIAL"/>
+      <property name="credentialAlias"          value="${employeeCredentialAlias}"/>
+    </include>
+    LEFT JOIN `organization`  AS ${employeeOrganizationAlias}
+          ON ${employeeOrganizationAlias}.`id`  = ${employeeAlias}.`organization_id`
+    LEFT JOIN `department`    AS ${employeeDepartmentAlias}
+          ON ${employeeDepartmentAlias}.`id`    = ${employeeAlias}.`department_id`
+  </sql>
+
+</mapper>

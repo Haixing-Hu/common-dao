@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.testbed.mapper.EmployeeMapper">
+
+  <resultMap id="EmployeeResultMap" type="ltd.qubit.model.organization.Employee">
+    <id property="id"                                       column="id"/>
+    <result property="username"                             column="username"/>
+    <result property="personId"                             column="person_id"/>
+    <result property="code"                                 column="code"/>
+    <result property="internalCode"                         column="internal_code"/>
+    <result property="name"                                 column="name"/>
+    <result property="gender"                               column="gender"/>
+    <result property="birthday"                             column="birthday"/>
+    <result property="photo"                                column="photo"/>
+    <result property="description"                          column="description"/>
+    <result property="practisingType"                       column="practising_type"/>
+    <result property="practisingScope"                      column="practising_scope"/>
+    <result property="jobTitle"                             column="job_title"/>
+    <result property="comment"                              column="comment"/>
+    <result property="state"                                column="state"/>
+    <result property="createTime"                           column="create_time"/>
+    <result property="modifyTime"                           column="modify_time"/>
+    <result property="deleteTime"                           column="delete_time"/>
+    <association property="category"
+      javaType="ltd.qubit.commons.model.InfoWithEntity"
+      resultMap="ltd.qubit.commons.dao.mapper.InfoWithEntityResultMap"
+      columnPrefix="category_"/>
+    <association property="organization"
+      javaType="ltd.qubit.commons.model.StatefulInfo"
+      resultMap="ltd.qubit.commons.dao.mapper.StatefulInfoResultMap"
+      columnPrefix="organization_"/>
+    <association property="department"
+      javaType="ltd.qubit.commons.model.StatefulInfo"
+      resultMap="ltd.qubit.commons.dao.mapper.StatefulInfoResultMap"
+      columnPrefix="department_"/>
+    <association property="credential"
+      javaType="ltd.qubit.model.commons.CredentialInfo"
+      resultMap="ltd.qubit.commons.dao.mapper.CredentialInfoResultMap"
+      columnPrefix="credential_"/>
+    <association property="practisingCertificate"
+      javaType="ltd.qubit.model.commons.CredentialInfo"
+      resultMap="ltd.qubit.commons.dao.mapper.CredentialInfoResultMap"
+      columnPrefix="practising_certificate_"/>
+    <association property="titleCertificate"
+      javaType="ltd.qubit.model.commons.CredentialInfo"
+      resultMap="ltd.qubit.commons.dao.mapper.CredentialInfoResultMap"
+      columnPrefix="title_certificate_"/>
+    <association property="contact"
+      javaType="ltd.qubit.model.contact.Contact"
+      resultMap="ltd.qubit.commons.dao.mapper.ContactResultMap"
+      columnPrefix="contact_"/>
+  </resultMap>
+
+  <sql id="selectInfo">
+    SELECT  <include refid="ltd.qubit.commons.dao.mapper.selectColumnEmployeeInfo">
+              <property name="alias"                      value="e"/>
+              <property name="columnPrefix"               value=""/>
+              <property name="asPrefix"                   value=""/>
+              <property name="credentialAlias"            value="cred"/>
+              <property name="credentialColumnPrefix"     value=""/>
+              <property name="organizationAlias"          value="o"/>
+              <property name="organizationColumnPrefix"   value=""/>
+              <property name="departmentAlias"            value="d"/>
+              <property name="departmentColumnPrefix"     value=""/>
+            </include>
+    1 FROM `employee` AS e
+    LEFT JOIN `organization`  AS o
+        ON o.`id`             = e.`organization_id`
+    LEFT JOIN `department`    AS d
+        ON d.`id`             = e.`department_id`
+    <include refid="ltd.qubit.commons.dao.mapper.joinCredential">
+      <property name="alias"                    value="e"/>
+      <property name="type"                     value="EMPLOYEE"/>
+      <property name="property"                 value="CREDENTIAL"/>
+      <property name="credentialAlias"          value="cred"/>
+    </include>
+  </sql>
+
+  <sql id="selectEmployee">
+    SELECT  e.`id`                              AS `id`,
+            e.`username`                        AS `username`,
+            e.`person_id`                       AS `person_id`,
+            e.`code`                            AS `code`,
+            e.`internal_code`                   AS `internal_code`,
+            e.`name`                            AS `name`,
+            e.`gender`                          AS `gender`,
+            e.`birthday`                        AS `birthday`,
+            <include refid="ltd.qubit.commons.dao.mapper.selectColumnInfoWithEntity">
+              <property name="alias"          value="c"/>
+              <property name="columnPrefix"   value=""/>
+              <property name="asPrefix"       value="category_"/>
+            </include>
+            <include refid="ltd.qubit.commons.dao.mapper.selectColumnStatefulInfo">
+              <property name="alias"            value="o"/>
+              <property name="columnPrefix"     value=""/>
+              <property name="asPrefix"         value="organization_"/>
+            </include>
+            <include refid="ltd.qubit.commons.dao.mapper.selectColumnStatefulInfo">
+              <property name="alias"            value="d"/>
+              <property name="columnPrefix"     value=""/>
+              <property name="asPrefix"         value="department_"/>
+            </include>
+            <include refid="ltd.qubit.commons.dao.mapper.selectColumnContact">
+              <property name="alias"            value="e"/>
+              <property name="countryAlias"     value="addr_t"/>
+              <property name="provinceAlias"    value="addr_p"/>
+              <property name="cityAlias"        value="addr_c"/>
+              <property name="districtAlias"    value="addr_d"/>
+              <property name="streetAlias"      value="addr_s"/>
+              <property name="columnPrefix"     value=""/>
+              <property name="asPrefix"         value="contact_"/>
+            </include>
+            e.`photo`                           AS `photo`,
+            e.`description`                     AS `description`,
+            <include refid="ltd.qubit.commons.dao.mapper.selectColumnCredentialInfo">
+              <property name="alias"            value="cred"/>
+              <property name="columnPrefix"     value=""/>
+              <property name="asPrefix"         value="credential_"/>
+            </include>
+            <include refid="ltd.qubit.commons.dao.mapper.selectColumnCredentialInfo">
+              <property name="alias"            value="cred_p"/>
+              <property name="columnPrefix"     value=""/>
+              <property name="asPrefix"         value="practising_certificate_"/>
+            </include>
+            <include refid="ltd.qubit.commons.dao.mapper.selectColumnCredentialInfo">
+              <property name="alias"            value="cred_t"/>
+              <property name="columnPrefix"     value=""/>
+              <property name="asPrefix"         value="title_certificate_"/>
+            </include>
+            e.`practising_type`                 AS `practising_type`,
+            e.`practising_scope`                AS `practising_scope`,
+            e.`job_title`                       AS `job_title`,
+            e.`comment`                         AS `comment`,
+            e.`state`                           AS `state`,
+            e.`create_time`                     AS `create_time`,
+            e.`modify_time`                     AS `modify_time`,
+            e.`delete_time`                     AS `delete_time`
+    FROM `employee` AS e
+    LEFT JOIN `category`      AS c
+          ON c.`id`           = e.`category_id`
+    LEFT JOIN `organization`  AS o
+          ON o.`id`           = e.`organization_id`
+    LEFT JOIN `department`    AS d
+          ON d.`id`           = e.`department_id`
+    <include refid="ltd.qubit.commons.dao.mapper.joinCredential">
+      <property name="alias"                    value="e"/>
+      <property name="type"                     value="EMPLOYEE"/>
+      <property name="property"                 value="CREDENTIAL"/>
+      <property name="credentialAlias"          value="cred"/>
+    </include>
+    <include refid="ltd.qubit.commons.dao.mapper.joinCredential">
+      <property name="alias"                    value="e"/>
+      <property name="type"                     value="EMPLOYEE"/>
+      <property name="property"                 value="PRACTISING_CERTIFICATE"/>
+      <property name="credentialAlias"          value="cred_p"/>
+    </include>
+    <include refid="ltd.qubit.commons.dao.mapper.joinCredential">
+      <property name="alias"                    value="e"/>
+      <property name="type"                     value="EMPLOYEE"/>
+      <property name="property"                 value="TITLE_CERTIFICATE"/>
+      <property name="credentialAlias"          value="cred_t"/>
+    </include>
+    <include refid="ltd.qubit.commons.dao.mapper.joinContact">
+      <property name="alias"            value="e"/>
+      <property name="columnPrefix"     value=""/>
+      <property name="countryAlias"     value="addr_t"/>
+      <property name="provinceAlias"    value="addr_p"/>
+      <property name="cityAlias"        value="addr_c"/>
+      <property name="districtAlias"    value="addr_d"/>
+      <property name="streetAlias"      value="addr_s"/>
+    </include>
+  </sql>
+
+  <select id="count" parameterType="map"
+    resultType="long" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.count">
+      <property name="table"  value="employee"/>
+      <property name="alias"  value="e"/>
+      <property name="sql"    value="selectEmployee"/>
+    </include>
+  </select>
+
+  <select id="list" parameterType="map"
+    resultMap="EmployeeResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.list">
+      <property name="sql"    value="selectEmployee"/>
+      <property name="alias"  value="e"/>
+    </include>
+  </select>
+
+  <select id="exist" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.exist">
+      <property name="table" value="employee"/>
+    </include>
+  </select>
+
+  <select id="existNonDeleted" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.existNonDeleted">
+      <property name="table" value="employee"/>
+    </include>
+  </select>
+
+  <select id="existCode" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.existCode">
+      <property name="table" value="employee"/>
+    </include>
+  </select>
+
+  <select id="existCredential" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.existCredential">
+      <property name="table"    value="employee"/>
+      <property name="type"     value="EMPLOYEE"/>
+      <property name="property" value="CREDENTIAL"/>
+    </include>
+  </select>
+
+  <select id="get" parameterType="map"
+    resultMap="EmployeeResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.get">
+      <property name="sql"    value="selectEmployee"/>
+      <property name="alias"  value="e"/>
+    </include>
+  </select>
+
+  <select id="getByCode" parameterType="map"
+    resultMap="EmployeeResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getByCode">
+      <property name="sql"    value="selectEmployee"/>
+      <property name="alias"  value="e"/>
+    </include>
+  </select>
+
+  <select id="getByCredential" parameterType="map"
+    resultMap="EmployeeResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getByCredential">
+      <property name="sql"              value="selectEmployee"/>
+      <property name="credentialAlias"  value="cred"/>
+    </include>
+  </select>
+
+  <select id="getIdByCode" parameterType="map"
+    resultType="Long" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getIdByCode">
+      <property name="table" value="employee"/>
+    </include>
+  </select>
+
+  <select id="getIdByCredential" parameterType="map"
+    resultType="Long" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getIdByCredential">
+      <property name="table"    value="employee"/>
+      <property name="type"     value="EMPLOYEE"/>
+      <property name="property" value="CREDENTIAL"/>
+    </include>
+  </select>
+
+  <select id="getInfo" parameterType="map"
+    resultMap="ltd.qubit.commons.dao.mapper.EmployeeInfoResultMap"
+    resultSetType="FORWARD_ONLY">
+    <include refid="selectInfo"/>
+    WHERE e.`id` = #{id}
+    LIMIT 1
+  </select>
+
+  <select id="getInfoByCode" parameterType="map"
+    resultMap="ltd.qubit.commons.dao.mapper.EmployeeInfoResultMap"
+    resultSetType="FORWARD_ONLY">
+    <include refid="selectInfo"/>
+    WHERE e.`code` = #{code}
+    LIMIT 1
+  </select>
+
+  <select id="getInfoByCredential" parameterType="map"
+    resultMap="ltd.qubit.commons.dao.mapper.EmployeeInfoResultMap"
+    resultSetType="FORWARD_ONLY">
+    <include refid="selectInfo"/>
+    WHERE cred.`type`        = #{credential.type}
+      AND cred.`number`      = #{credential.number}
+    LIMIT 1
+  </select>
+
+  <select id="getContact" parameterType="map"
+    resultMap="ltd.qubit.commons.dao.mapper.ContactResultMap"
+    resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getContact">
+      <property name="table"          value="employee"/>
+      <property name="columnPrefix"   value=""/>
+    </include>
+  </select>
+
+  <insert id="add" parameterType="ltd.qubit.model.organization.Employee">
+    INSERT INTO `employee` (
+      `id`,
+      `username`,
+      `person_id`,
+      `code`,
+      `internal_code`,
+      `name`,
+      `gender`,
+      `birthday`,
+      `category_id`,
+      `organization_id`,
+      `department_id`,
+    <include refid="ltd.qubit.commons.dao.mapper.insertColumnContact">
+      <property name="prefix"  value=""/>
+    </include>
+      `photo`,
+      `description`,
+      `practising_type`,
+      `practising_scope`,
+      `job_title`,
+      `comment`,
+      `state`,
+      `create_time`
+    ) VALUES (
+      #{id},
+      #{username},
+      #{personId},
+      #{code},
+      #{internalCode},
+      #{name},
+      #{gender},
+      #{birthday},
+      #{category.id},
+      #{organization.id},
+      #{department.id},
+    <include refid="ltd.qubit.commons.dao.mapper.insertValueContact">
+      <property name="prefix"  value="contact."/>
+    </include>
+      #{photo},
+      #{description},
+      #{practisingType},
+      #{practisingScope},
+      #{jobTitle},
+      #{comment},
+      #{state},
+      #{createTime}
+    )
+  </insert>
+
+  <sql id="updateEmployee">
+    UPDATE `employee`
+    SET   `username`                    = #{username},
+          `person_id`                   = #{personId},
+          `internal_code`               = #{internalCode},
+          `name`                        = #{name},
+          `gender`                      = #{gender},
+          `birthday`                    = #{birthday},
+          `category_id`                 = #{category.id},
+          `organization_id`             = #{organization.id},
+          `department_id`               = #{department.id},
+          `photo`                       = #{photo},
+          `description`                 = #{description},
+          `practising_type`             = #{practisingType},
+          `practising_scope`            = #{practisingScope},
+          `job_title`                   = #{jobTitle},
+          `modify_time`                 = #{modifyTime},
+          `state`                       = #{state}
+  </sql>
+
+  <update id="update" parameterType="ltd.qubit.model.organization.Employee">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeleted">
+      <property name="sql" value="updateEmployee"/>
+    </include>
+  </update>
+
+  <update id="updateByCode" parameterType="ltd.qubit.model.organization.Employee">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedByCode">
+      <property name="sql" value="updateEmployee"/>
+    </include>
+  </update>
+
+  <update id="updateContact" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedContact">
+      <property name="table"          value="employee"/>
+      <property name="columnPrefix"   value=""/>
+      <property name="propertyPrefix" value=""/>
+    </include>
+  </update>
+
+  <update id="updateComment" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedComment">
+      <property name="table"          value="employee"/>
+    </include>
+  </update>
+
+  <update id="updateState" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedState">
+      <property name="table"          value="employee"/>
+    </include>
+  </update>
+
+  <update id="updateStateByCode" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedStateByCode">
+      <property name="table"          value="employee"/>
+    </include>
+  </update>
+
+  <update id="delete" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.delete">
+      <property name="table" value="employee"/>
+    </include>
+  </update>
+
+  <update id="restore" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.restore">
+      <property name="table" value="employee"/>
+    </include>
+  </update>
+
+  <delete id="purge" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.purge">
+      <property name="table" value="employee"/>
+    </include>
+  </delete>
+
+  <delete id="purgeAll">
+    <include refid="ltd.qubit.commons.dao.mapper.purgeAll">
+      <property name="table" value="employee"/>
+    </include>
+  </delete>
+
+  <delete id="erase" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.erase">
+      <property name="table" value="employee"/>
+    </include>
+  </delete>
+
+  <delete id="clear">
+    <include refid="ltd.qubit.commons.dao.mapper.clear">
+      <property name="table" value="employee"/>
+    </include>
+  </delete>
+
+  <update id="deleteByCode" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.deleteByCode">
+      <property name="table" value="employee"/>
+    </include>
+  </update>
+
+  <update id="restoreByCode" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.restoreByCode">
+      <property name="table" value="employee"/>
+    </include>
+  </update>
+
+  <delete id="purgeByCode" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.purgeByCode">
+      <property name="table" value="employee"/>
+    </include>
+  </delete>
+
+  <delete id="eraseByCode" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.eraseByCode">
+      <property name="table" value="employee"/>
+    </include>
+  </delete>
+</mapper>

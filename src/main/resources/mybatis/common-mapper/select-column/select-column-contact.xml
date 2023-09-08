@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.mapper">
+
+  <sql id="selectColumnContact">
+    ${alias}.`${columnPrefix}phone`                 AS `${asPrefix}phone`,
+    ${alias}.`${columnPrefix}phone_verified`        AS `${asPrefix}phone_verified`,
+    ${alias}.`${columnPrefix}mobile`                AS `${asPrefix}mobile`,
+    ${alias}.`${columnPrefix}mobile_verified`       AS `${asPrefix}mobile_verified`,
+    ${alias}.`${columnPrefix}email`                 AS `${asPrefix}email`,
+    ${alias}.`${columnPrefix}email_verified`        AS `${asPrefix}email_verified`,
+    ${alias}.`${columnPrefix}url`                   AS `${asPrefix}url`,
+    <include refid="ltd.qubit.commons.dao.mapper.selectColumnAddress">
+      <property name="alias"          value="${alias}"/>
+      <property name="countryAlias"   value="${countryAlias}"/>
+      <property name="provinceAlias"  value="${provinceAlias}"/>
+      <property name="cityAlias"      value="${cityAlias}"/>
+      <property name="districtAlias"  value="${districtAlias}"/>
+      <property name="streetAlias"    value="${streetAlias}"/>
+      <property name="columnPrefix"   value="${columnPrefix}address_"/>
+      <property name="asPrefix"       value="${asPrefix}address_"/>
+    </include>
+    ${alias}.`${columnPrefix}address_verified`      AS `${asPrefix}address_verified`,
+  </sql>
+</mapper>

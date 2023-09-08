@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.springframework.org/schema/beans"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
+     http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  <!-- 配置 SourceMapper，注意必须引用其他文件配置好 MyBatis SQL Session Template -->
+  <bean class="org.mybatis.spring.mapper.MapperFactoryBean">
+    <property name="mapperInterface" value="ltd.qubit.commons.dao.testbed.mapper.SourceMapper"/>
+    <property name="sqlSessionTemplate" ref="sqlSessionTemplate"/>
+  </bean>
+
+  <!-- 配置 SourceDao -->
+  <bean class="ltd.qubit.commons.dao.testbed.impl.SourceDaoImpl"/>
+
+</beans>

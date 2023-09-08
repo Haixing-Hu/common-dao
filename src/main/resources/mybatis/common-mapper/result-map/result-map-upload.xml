@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.mapper">
+
+  <resultMap id="UploadResultMap" type="ltd.qubit.model.upload.Upload">
+    <result property="id"                         column="id"/>
+    <result property="originalFilename"           column="original_filename"/>
+    <result property="type"                       column="type"/>
+    <result property="createTime"                 column="create_time"/>
+    <result property="deleteTime"                 column="delete_time"/>
+    <association property="file"
+      javaType="ltd.qubit.model.upload.FileInfo"
+      resultMap="ltd.qubit.commons.dao.mapper.FileInfoResultMap"
+      columnPrefix="file_"/>
+    <association property="screenshot"
+      javaType="ltd.qubit.model.upload.FileInfo"
+      resultMap="ltd.qubit.commons.dao.mapper.FileInfoResultMap"
+      columnPrefix="screenshot_"/>
+    <association property="smallThumbnail"
+      javaType="ltd.qubit.model.upload.FileInfo"
+      resultMap="ltd.qubit.commons.dao.mapper.FileInfoResultMap"
+      columnPrefix="small_thumbnail_"/>
+    <association property="largeThumbnail"
+      javaType="ltd.qubit.model.upload.FileInfo"
+      resultMap="ltd.qubit.commons.dao.mapper.FileInfoResultMap"
+      columnPrefix="large_thumbnail_"/>
+  </resultMap>
+
+</mapper>

@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.testbed.mapper.SessionMapper">
+
+  <resultMap id="SessionResultMap" type="ltd.qubit.model.system.Session">
+    <id property="id"                                     column="id"/>
+    <result property="roles"                              column="roles"/>
+    <result property="privileges"                         column="privileges"/>
+    <result property="lastActiveTime"                     column="last_active_time"/>
+    <result property="createTime"                         column="create_time"/>
+    <association property="app"
+      javaType="ltd.qubit.commons.model.StatefulInfo"
+      resultMap="ltd.qubit.commons.dao.mapper.StatefulInfoResultMap"
+      columnPrefix="app_"/>
+    <association property="user"
+      javaType="ltd.qubit.model.person.UserInfo"
+      resultMap="ltd.qubit.commons.dao.mapper.UserInfoResultMap"
+      columnPrefix="user_"/>
+    <association property="token"
+      javaType="ltd.qubit.model.commons.Token"
+      resultMap="ltd.qubit.commons.dao.mapper.TokenResultMap"
+      columnPrefix="token_"/>
+    <association property="environment"
+      javaType="ltd.qubit.model.system.Environment"
+      resultMap="ltd.qubit.commons.dao.mapper.EnvironmentResultMap"
+      columnPrefix="environment_"/>
+    <association property="expired"
+      javaType="ltd.qubit.model.system.Expired"
+      resultMap="ltd.qubit.commons.dao.mapper.ExpiredResultMap"
+      columnPrefix="expired_"/>
+  </resultMap>
+
+  <sql id="selectSession">
+    SELECT  s.`id`                            AS `id`,
+            <include refid="ltd.qubit.commons.dao.mapper.selectColumnStatefulInfo">
+              <property name="alias"          value="a"/>
+              <property name="columnPrefix"   value=""/>
+              <property name="asPrefix"       value="app_"/>
+            </include>
+            <include refid="ltd.qubit.commons.dao.mapper.selectColumnUserInfo">
+              <property name="alias"          value="u"/>
+              <property name="columnPrefix"   value=""/>
+              <property name="asPrefix"       value="user_"/>
+            </include>
+            <include refid="ltd.qubit.commons.dao.mapper.selectColumnToken">
+              <property name="alias"          value="s"/>
+              <property name="columnPrefix"   value="token_"/>
+              <property name="asPrefix"       value="token_"/>
+            </include>
+            s.`roles`                         AS `roles`,
+            s.`privileges`                    AS `privileges`,
+            <include refid="ltd.qubit.commons.dao.mapper.selectColumnEnvironment">
+              <property name="alias"          value="s"/>
+              <property name="columnPrefix"   value=""/>
+              <property name="asPrefix"       value="environment_"/>
+            </include>
+            <include refid="ltd.qubit.commons.dao.mapper.selectColumnExpired">
+              <property name="alias"          value="s"/>
+              <property name="columnPrefix"   value="expired_"/>
+              <property name="asPrefix"       value="expired_"/>
+            </include>
+            s.`last_active_time`              AS `last_active_time`,
+            s.`create_time`                   AS `create_time`
+    FROM `session` AS s
+    JOIN `app`  AS a
+        ON a.`id`  = s.`app_id`
+    LEFT JOIN `user` AS u
+        ON u.`id`  = s.`user_id`
+  </sql>
+
+  <select id="count" parameterType="map"
+    resultType="long" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.count">
+      <property name="table"  value="session"/>
+      <property name="alias"  value="s"/>
+      <property name="sql"    value="selectSession"/>
+    </include>
+  </select>
+
+  <select id="list" parameterType="map"
+    resultMap="SessionResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.list">
+      <property name="sql"    value="selectSession"/>
+      <property name="alias"  value="s"/>
+    </include>
+  </select>
+
+  <select id="exist" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.exist">
+      <property name="table" value="session"/>
+    </include>
+  </select>
+
+  <select id="get" parameterType="map"
+    resultMap="SessionResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.get">
+      <property name="sql" value="selectSession"/>
+      <property name="alias" value="s"/>
+    </include>
+  </select>
+
+  <select id="getByToken" parameterType="map"
+    resultMap="SessionResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="selectSession"/>
+    WHERE s.token_value = #{token}
+  </select>
+
+  <insert id="add" parameterType="ltd.qubit.model.system.Session">
+    INSERT INTO `session` (
+      `id`,
+      `app_id`,
+      `user_id`,
+    <include refid="ltd.qubit.commons.dao.mapper.insertColumnToken">
+      <property name="prefix"  value="token_"/>
+    </include>
+      `roles`,
+      `privileges`,
+    <include refid="ltd.qubit.commons.dao.mapper.insertColumnEnvironment">
+      <property name="prefix"  value=""/>
+    </include>
+      `last_active_time`,
+      `create_time`
+    ) VALUES (
+      #{id},
+      #{app.id},
+      #{user.id},
+    <include refid="ltd.qubit.commons.dao.mapper.insertValueToken">
+      <property name="prefix"  value="token."/>
+    </include>
+      #{roles},
+      #{privileges},
+    <include refid="ltd.qubit.commons.dao.mapper.insertValueEnvironment">
+      <property name="prefix"  value="environment."/>
+    </include>
+      #{lastActiveTime},
+      #{createTime}
+    )
+  </insert>
+
+  <update id="updateLastActiveTime" parameterType="map">
+    UPDATE `session`
+       SET `last_active_time` = #{lastActiveTime}
+     WHERE `id` = #{id}
+  </update>
+
+  <update id="updateExpired" parameterType="map">
+    UPDATE `session`
+       SET `expired_time`    = #{expired.time},
+           `expired_reason`  = #{expired.reason}
+     WHERE `id` = #{id}
+  </update>
+
+  <update id="updateExpiredFor" parameterType="map">
+    UPDATE `session`
+    SET `expired_time`    = #{expired.time},
+        `expired_reason`  = #{expired.reason}
+    WHERE `user_id`       = #{userId}
+      AND `app_id`        = #{appId}
+      AND `expired_time` IS NULL
+  </update>
+
+  <update id="updateExpiredForAll" parameterType="map">
+    UPDATE `session`
+    SET `expired_time`    = #{expired.time},
+        `expired_reason`  = #{expired.reason}
+    WHERE `expired_time` IS NULL
+  </update>
+
+  <delete id="erase">
+    <include refid="ltd.qubit.commons.dao.mapper.erase">
+      <property name="table" value="session"/>
+    </include>
+  </delete>
+
+  <delete id="clear">
+    <include refid="ltd.qubit.commons.dao.mapper.clear">
+      <property name="table" value="session"/>
+    </include>
+  </delete>
+
+</mapper>

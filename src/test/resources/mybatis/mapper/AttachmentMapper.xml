@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.testbed.mapper.AttachmentMapper">
+
+  <sql id="selectAttachment">
+    SELECT <include refid="ltd.qubit.commons.dao.mapper.selectColumnAttachment">
+            <property name="attachmentAlias"      value="a"/>
+            <property name="uploadAlias"          value="u"/>
+            <property name="categoryAlias"        value="c"/>
+            <property name="columnPrefix"         value=""/>
+            <property name="asPrefix"             value=""/>
+          </include>
+    1 FROM `attachment` AS a   <!-- 加上 1 解决上述include片段最后一个逗号问题 -->
+    JOIN `upload` AS u ON u.`id` = a.`upload_id`
+    LEFT JOIN `category` AS c ON c.`id` = a.`category_id`
+  </sql>
+
+  <select id="count" parameterType="map"
+    resultType="long" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.count">
+      <property name="table"  value="attachment"/>
+      <property name="alias"  value="a"/>
+      <property name="sql"    value="selectAttachment"/>
+    </include>
+  </select>
+
+  <select id="list" parameterType="map"
+    resultMap="ltd.qubit.commons.dao.mapper.AttachmentResultMap"
+    resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.list">
+      <property name="sql"    value="selectAttachment"/>
+      <property name="alias"  value="a"/>
+    </include>
+  </select>
+
+  <select id="countForOwner" parameterType="map"
+    resultType="long" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.countNonDeletedForOwner">
+      <property name="table" value="attachment"/>
+    </include>
+  </select>
+
+  <select id="getForOwner" parameterType="map"
+    resultMap="ltd.qubit.commons.dao.mapper.AttachmentResultMap"
+    resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getNonDeletedForOwner">
+      <property name="sql" value="selectAttachment"/>
+      <property name="alias" value="a"/>
+    </include>
+  </select>
+
+  <select id="getIdForOwner" parameterType="map"
+    resultType="long" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getNonDeletedIdForOwner">
+      <property name="table" value="attachment"/>
+    </include>
+  </select>
+
+  <select id="exist" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.exist">
+      <property name="table" value="attachment"/>
+    </include>
+  </select>
+
+  <select id="existNonDeleted" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.existNonDeleted">
+      <property name="table" value="attachment"/>
+    </include>
+  </select>
+
+  <select id="existIndex" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    SELECT EXISTS ( SELECT 1
+                    FROM `attachment` AS a
+                    <include refid="ltd.qubit.commons.dao.mapper.filterByOwnerIndex">
+                      <property name="alias" value="a"/>
+                    </include>
+                    LIMIT 1 )
+  </select>
+
+  <select id="get" parameterType="map"
+    resultMap="ltd.qubit.commons.dao.mapper.AttachmentResultMap"
+    resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.get">
+      <property name="sql" value="selectAttachment"/>
+      <property name="alias" value="a"/>
+    </include>
+  </select>
+
+  <select id="getByIndex" parameterType="map"
+    resultMap="ltd.qubit.commons.dao.mapper.AttachmentResultMap"
+    resultSetType="FORWARD_ONLY">
+    <include refid="selectAttachment"/>
+    <include refid="ltd.qubit.commons.dao.mapper.filterByOwnerIndex">
+      <property name="alias" value="a"/>
+    </include>
+    LIMIT 1
+  </select>
+
+  <select id="getByUrl" parameterType="map"
+    resultMap="ltd.qubit.commons.dao.mapper.AttachmentResultMap"
+    resultSetType="FORWARD_ONLY">
+    <include refid="selectAttachment"/>
+    WHERE u.`file_url` = #{url}
+    LIMIT 1
+  </select>
+
+  <select id="getByUploadId" parameterType="map"
+    resultMap="ltd.qubit.commons.dao.mapper.AttachmentResultMap"
+    resultSetType="FORWARD_ONLY">
+    <include refid="selectAttachment"/>
+    WHERE a.`upload_id` = #{uploadId}
+    LIMIT 1
+  </select>
+
+  <select id="getIdByIndex" parameterType="map"
+    resultType="Long" resultSetType="FORWARD_ONLY">
+    SELECT a.`id`
+      FROM `attachment` AS a
+    <include refid="ltd.qubit.commons.dao.mapper.filterByOwnerIndex">
+      <property name="alias" value="a"/>
+    </include>
+    LIMIT 1
+  </select>
+
+  <insert id="add" parameterType="ltd.qubit.model.upload.Attachment">
+    INSERT INTO `attachment` (
+      `id`,
+      `owner_type`,
+      `owner_id`,
+      `owner_property`,
+      `category_id`,
+      `type`,
+      `index`,
+      `title`,
+      `description`,
+      `upload_id`,
+      `state`,
+      `visible`,
+      `create_time`
+    ) VALUES (
+      #{id},
+      #{owner.type},
+      #{owner.id},
+      #{owner.property},
+      #{category.id},
+      #{type},
+      #{index},
+      #{title},
+      #{description},
+      #{upload.id},
+      #{state},
+      #{visible},
+      #{createTime}
+    )
+  </insert>
+
+  <sql id="updateAttachment">
+    UPDATE `attachment` AS a
+    SET `title`         = #{title},
+        `description`   = #{description},
+        `index`         = #{index},
+        `visible`       = #{visible},
+        `category_id`   = #{category.id},
+        `type`          = #{type},
+        `upload_id`     = #{upload.id},
+        `modify_time`   = #{modifyTime}
+  </sql>
+
+  <update id="update" parameterType="ltd.qubit.model.upload.Attachment">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeleted">
+      <property name="sql" value="updateAttachment"/>
+    </include>
+  </update>
+
+  <update id="updateByIndex" parameterType="ltd.qubit.model.upload.Attachment">
+    <include refid="updateAttachment" />
+    <include refid="ltd.qubit.commons.dao.mapper.filterNonDeletedByOwnerIndex">
+      <property name="alias" value="a"/>
+    </include>
+  </update>
+
+  <update id="updateUpload" parameterType="map">
+    UPDATE `attachment`
+       SET `upload_id`      = #{upload.id},
+           `modify_time`    = #{modifyTime}
+     WHERE `id` = #{id}
+       AND `delete_time` IS NULL
+  </update>
+
+  <update id="updateState" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedState">
+      <property name="table" value="attachment"/>
+    </include>
+  </update>
+
+  <update id="updateVisible" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedVisible">
+      <property name="table" value="attachment"/>
+    </include>
+  </update>
+
+  <update id="updateStateForOwner" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedStateForOwner">
+      <property name="table" value="attachment"/>
+    </include>
+  </update>
+
+  <update id="delete" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.delete">
+      <property name="table" value="attachment"/>
+    </include>
+  </update>
+
+  <update id="restore" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.restore">
+      <property name="table" value="attachment"/>
+    </include>
+  </update>
+
+  <delete id="purge" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.purge">
+      <property name="table" value="attachment"/>
+    </include>
+  </delete>
+
+  <delete id="purgeAll">
+    <include refid="ltd.qubit.commons.dao.mapper.purgeAll">
+      <property name="table" value="attachment"/>
+    </include>
+  </delete>
+
+  <update id="erase" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.erase">
+      <property name="table" value="attachment"/>
+    </include>
+  </update>
+
+  <delete id="clear">
+    <include refid="ltd.qubit.commons.dao.mapper.clear">
+      <property name="table" value="attachment"/>
+    </include>
+  </delete>
+
+  <update id="deleteForOwner" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.deleteForOwner">
+      <property name="table" value="attachment"/>
+    </include>
+  </update>
+
+  <update id="restoreForOwner" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.restoreForOwner">
+      <property name="table" value="attachment"/>
+    </include>
+  </update>
+
+  <delete id="purgeForOwner" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.purgeForOwner">
+      <property name="table" value="attachment"/>
+    </include>
+  </delete>
+
+  <delete id="eraseForOwner">
+    <include refid="ltd.qubit.commons.dao.mapper.eraseForOwner">
+      <property name="table" value="attachment"/>
+    </include>
+  </delete>
+
+  <delete id="eraseByIndex" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.eraseByOwnerIndex">
+      <property name="table" value="attachment"/>
+    </include>
+  </delete>
+
+</mapper>

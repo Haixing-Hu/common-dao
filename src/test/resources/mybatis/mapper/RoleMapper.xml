@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.testbed.mapper.RoleMapper">
+
+  <resultMap id="RoleResultMap" type="ltd.qubit.model.privilege.Role">
+    <id property="id"                                       column="id"/>
+    <result property="code"                                 column="code"/>
+    <result property="name"                                 column="name"/>
+    <result property="description"                          column="description"/>
+    <result property="guest"                                column="guest"/>
+    <result property="basic"                                column="basic"/>
+    <result property="privileges"                           column="privileges"/>
+    <result property="state"                                column="state"/>
+    <result property="createTime"                           column="create_time"/>
+    <result property="modifyTime"                           column="modify_time"/>
+    <result property="deleteTime"                           column="delete_time"/>
+    <association property="app"
+      javaType="ltd.qubit.commons.model.StatefulInfo"
+      resultMap="ltd.qubit.commons.dao.mapper.StatefulInfoResultMap"
+      columnPrefix="app_"/>
+  </resultMap>
+
+  <sql id="selectRole">
+    SELECT  r.`id`                         AS `id`,
+            <include refid="ltd.qubit.commons.dao.mapper.selectColumnStatefulInfo">
+              <property name="alias"          value="a"/>
+              <property name="columnPrefix"   value=""/>
+              <property name="asPrefix"       value="app_"/>
+            </include>
+            r.`code`                       AS `code`,
+            r.`name`                       AS `name`,
+            r.`description`                AS `description`,
+            r.`guest`                      AS `guest`,
+            r.`basic`                      AS `basic`,
+            r.`privileges`                 AS `privileges`,
+            r.`state`                      AS `state`,
+            r.`create_time`                AS `create_time`,
+            r.`modify_time`                AS `modify_time`,
+            r.`delete_time`                AS `delete_time`
+    FROM `role` AS `r`
+    JOIN `app` AS a
+      ON a.`id` = r.`app_id`
+  </sql>
+
+  <select id="count" parameterType="map"
+    resultType="long" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.count">
+      <property name="table"            value="role"/>
+      <property name="alias"            value="r"/>
+      <property name="sql"              value="selectRole"/>
+    </include>
+  </select>
+
+  <select id="list" parameterType="map"
+    resultMap="RoleResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.list">
+      <property name="sql"              value="selectRole"/>
+      <property name="alias"            value="r"/>
+    </include>
+  </select>
+
+  <select id="exist" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.exist">
+      <property name="table"            value="role"/>
+    </include>
+  </select>
+
+  <select id="existNonDeleted" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.existNonDeleted">
+      <property name="table"            value="role"/>
+    </include>
+  </select>
+
+  <select id="existCode" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.existParentCode">
+      <property name="table"            value="role"/>
+      <property name="parentTable"      value="app"/>
+      <property name="parentIdColumn"   value="app_id"/>
+    </include>
+  </select>
+
+  <select id="get" parameterType="map"
+    resultMap="RoleResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.get">
+      <property name="sql"              value="selectRole"/>
+      <property name="alias"            value="r"/>
+    </include>
+  </select>
+
+  <select id="getByCode" parameterType="map"
+    resultMap="RoleResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getByParentCode">
+      <property name="sql"              value="selectRole"/>
+      <property name="alias"            value="r"/>
+      <property name="parentAlias"      value="a"/>
+    </include>
+  </select>
+
+  <select id="getInfo" parameterType="map"
+    resultMap="ltd.qubit.commons.dao.mapper.StatefulInfoResultMap"
+    resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getStatefulInfo">
+      <property name="table"            value="role"/>
+    </include>
+  </select>
+
+  <select id="getInfoByCode" parameterType="map"
+    resultMap="ltd.qubit.commons.dao.mapper.StatefulInfoResultMap"
+    resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getStatefulInfoByParentCode">
+      <property name="table"            value="role"/>
+      <property name="parentTable"      value="app"/>
+      <property name="parentIdColumn"   value="app_id"/>
+    </include>
+  </select>
+
+  <select id="getIdByCode" parameterType="map"
+    resultType="Long" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getIdByParentCode">
+      <property name="table"            value="role"/>
+      <property name="parentTable"      value="app"/>
+      <property name="parentIdColumn"   value="app_id"/>
+    </include>
+  </select>
+
+  <select id="getForUser" parameterType="map"
+    resultMap="RoleResultMap" resultSetType="FORWARD_ONLY">
+   <include refid="selectRole"/>
+   JOIN `user_role` AS ur
+      ON ur.`role_id` = r.`id`
+   WHERE ur.`user_id` = #{userId}
+     AND ur.`app_id` = #{appId}
+     AND ur.`delete_time` IS NULL
+     AND r.`delete_time` IS NULL
+  </select>
+
+  <insert id="add" parameterType="ltd.qubit.model.privilege.Role">
+    INSERT INTO `role` (
+      `id`,
+      `app_id`,
+      `code`,
+      `name`,
+      `description`,
+      `guest`,
+      `basic`,
+      `privileges`,
+      `state`,
+      `create_time`
+    ) VALUES (
+      #{id},
+      #{app.id},
+      #{code},
+      #{name},
+      #{description},
+      #{guest},
+      #{basic},
+      #{privileges},
+      #{state},
+      #{createTime}
+    )
+  </insert>
+
+  <sql id="updateRole">
+    UPDATE `role`
+    SET   `name`                        = #{name},
+          `description`                 = #{description},
+          `guest`                       = #{guest},
+          `basic`                       = #{basic},
+          `privileges`                  = #{privileges},
+          `modify_time`                 = #{modifyTime}
+  </sql>
+
+  <update id="update" parameterType="ltd.qubit.model.privilege.Role">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeleted">
+      <property name="sql"              value="updateRole"/>
+    </include>
+  </update>
+
+  <update id="updateByCode" parameterType="ltd.qubit.model.privilege.Role">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedByParentCode">
+      <property name="sql"              value="updateRole"/>
+      <property name="parentIdColumn"   value="app_id"/>
+      <property name="parentIdProperty" value="app.id"/>
+    </include>
+  </update>
+
+  <update id="updateState" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedState">
+      <property name="table"            value="role"/>
+    </include>
+  </update>
+
+  <update id="updateStateByCode" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedStateByParentCode">
+      <property name="table"            value="role"/>
+      <property name="parentIdColumn"   value="app_id"/>
+    </include>
+  </update>
+
+  <update id="delete" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.delete">
+      <property name="table"            value="role"/>
+    </include>
+  </update>
+
+  <update id="deleteByCode" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.deleteByParentCode">
+      <property name="table"            value="role"/>
+      <property name="parentIdColumn"   value="app_id"/>
+    </include>
+  </update>
+
+  <update id="restore" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.restore">
+      <property name="table"            value="role"/>
+    </include>
+  </update>
+
+  <update id="restoreByCode" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.restoreByParentCode">
+      <property name="table"            value="role"/>
+      <property name="parentIdColumn"   value="app_id"/>
+    </include>
+  </update>
+
+  <delete id="purge" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.purge">
+      <property name="table"            value="role"/>
+    </include>
+  </delete>
+
+  <update id="purgeByCode" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.purgeByParentCode">
+      <property name="table"            value="role"/>
+      <property name="parentIdColumn"   value="app_id"/>
+    </include>
+  </update>
+
+  <delete id="purgeAll">
+    <include refid="ltd.qubit.commons.dao.mapper.purgeAll">
+      <property name="table"            value="role"/>
+    </include>
+  </delete>
+
+  <update id="erase" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.erase">
+      <property name="table"            value="role"/>
+    </include>
+  </update>
+
+  <update id="eraseByCode" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.eraseByParentCode">
+      <property name="table"            value="role"/>
+      <property name="parentIdColumn"   value="app_id"/>
+    </include>
+  </update>
+
+  <delete id="clear">
+    <include refid="ltd.qubit.commons.dao.mapper.clear">
+      <property name="table"            value="role"/>
+    </include>
+  </delete>
+</mapper>

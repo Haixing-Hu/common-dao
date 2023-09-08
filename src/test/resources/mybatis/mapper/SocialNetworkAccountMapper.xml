@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.testbed.mapper.SocialNetworkAccountMapper">
+
+  <resultMap id="SocialNetworkAccountResultMap" type="ltd.qubit.model.person.SocialNetworkAccount">
+    <id property="id"                   column="id"/>
+    <result property="username"         column="username"/>
+    <result property="socialNetwork"    column="social_network"/>
+    <result property="openId"           column="open_id"/>
+    <result property="nickname"         column="nickname"/>
+    <result property="profiles"         column="profiles"/>
+    <result property="createTime"       column="create_time"/>
+    <result property="modifyTime"       column="modify_time"/>
+    <result property="deleteTime"       column="delete_time"/>
+    <collection property="payloads" javaType="ArrayList"
+      ofType="ltd.qubit.model.commons.Payload"
+      column="{owner.type=payloads_owner_type, owner.id=id, owner.property=payloads_owner_property}"
+      select="ltd.qubit.commons.dao.mapper.PayloadMapper.getForOwner"/>
+  </resultMap>
+
+  <sql id="selectSocialNetworkAccount">
+    SELECT  a.`id`                      AS `id`,
+            a.`username`                AS `username`,
+            a.`social_network`          AS `social_network`,
+            a.`open_id`                 AS `open_id`,
+            a.`nickname`                AS `nickname`,
+            a.`profiles`                AS `profiles`,
+            a.`create_time`             AS `create_time`,
+            a.`modify_time`             AS `modify_time`,
+            a.`delete_time`             AS `delete_time`,
+            'SOCIAL_NETWORK_ACCOUNT'    AS `payloads_owner_type`,
+            'PAYLOADS'                  AS `payloads_owner_property`
+    FROM `social_network_account` AS a
+  </sql>
+
+  <select id="count" parameterType="map"
+    resultType="long" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.count">
+      <property name="table"          value="social_network_account"/>
+      <property name="alias"          value="a"/>
+      <property name="sql"            value="selectSocialNetworkAccount"/>
+    </include>
+  </select>
+
+  <select id="list" parameterType="map"
+    resultMap="SocialNetworkAccountResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.list">
+      <property name="sql"            value="selectSocialNetworkAccount"/>
+      <property name="alias"          value="a"/>
+    </include>
+  </select>
+
+  <select id="exist" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.exist">
+      <property name="table"          value="social_network_account"/>
+    </include>
+  </select>
+
+  <select id="existNonDeleted" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.existNonDeleted">
+      <property name="table"          value="social_network_account"/>
+    </include>
+  </select>
+
+  <select id="existOpenId" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    SELECT EXISTS ( SELECT 1
+                      FROM `social_network_account` AS a
+                     WHERE a.`social_network` = #{socialNetwork}
+                       AND a.`open_id`        = #{openId}
+                     LIMIT 1 )
+  </select>
+
+  <select id="get" parameterType="map"
+    resultMap="SocialNetworkAccountResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.get">
+      <property name="sql"            value="selectSocialNetworkAccount"/>
+      <property name="alias"          value="a"/>
+    </include>
+  </select>
+
+  <select id="getByOpenId" parameterType="map"
+    resultMap="SocialNetworkAccountResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="selectSocialNetworkAccount"/>
+    WHERE a.`social_network`    = #{socialNetwork}
+      AND a.`open_id`           = #{openId}
+    LIMIT 1
+  </select>
+
+  <select id="getIdByOpenId" parameterType="map"
+    resultType="Long" resultSetType="FORWARD_ONLY">
+    SELECT a.`id`                   AS `id`
+     FROM `social_network_account`  AS a
+     WHERE a.`social_network`       = #{socialNetwork}
+       AND a.`open_id`              = #{openId}
+    LIMIT 1
+  </select>
+
+  <insert id="add" parameterType="ltd.qubit.model.person.SocialNetworkAccount">
+    INSERT INTO `social_network_account` (
+        `id`,
+        `username`,
+        `social_network`,
+        `open_id`,
+        `nickname`,
+        `profiles`,
+        `create_time`
+    ) VALUES (
+        #{id},
+        #{username},
+        #{socialNetwork},
+        #{openId},
+        #{nickname},
+        #{profiles},
+        #{createTime}
+    )
+  </insert>
+
+  <sql id="updateSocialNetworkAccount">
+    UPDATE `social_network_account`
+    SET   `social_network`  = #{socialNetwork},
+          `open_id`         = #{openId},
+          `nickname`        = #{nickname},
+          `profiles`        = #{profiles},
+          `modify_time`     = #{modifyTime}
+  </sql>
+
+  <update id="update" parameterType="ltd.qubit.model.person.SocialNetworkAccount">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeleted">
+      <property name="sql" value="updateSocialNetworkAccount"/>
+    </include>
+  </update>
+
+  <update id="updateByOpenId" parameterType="ltd.qubit.model.person.SocialNetworkAccount">
+    UPDATE `social_network_account`
+    SET   `nickname`        = #{nickname},
+          `profiles`        = #{profiles},
+          `modify_time`     = #{modifyTime}
+    WHERE `social_network`  = #{socialNetwork}
+      AND `open_id`         = #{openId}
+      AND `delete_time`     IS NULL
+  </update>
+
+  <update id="delete" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.delete">
+      <property name="table"          value="social_network_account"/>
+    </include>
+  </update>
+
+  <update id="restore" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.restore">
+      <property name="table"          value="social_network_account"/>
+    </include>
+  </update>
+
+  <delete id="purge" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.purge">
+      <property name="table"          value="social_network_account"/>
+    </include>
+  </delete>
+
+  <delete id="purgeAll">
+    <include refid="ltd.qubit.commons.dao.mapper.purgeAll">
+      <property name="table"          value="social_network_account"/>
+    </include>
+  </delete>
+
+  <update id="erase" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.erase">
+      <property name="table"          value="social_network_account"/>
+    </include>
+  </update>
+
+  <delete id="clear">
+    <include refid="ltd.qubit.commons.dao.mapper.clear">
+      <property name="table"          value="social_network_account"/>
+    </include>
+  </delete>
+</mapper>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.mapper">
+
+  <sql id="insertColumnContact">
+    `${prefix}phone`,
+    `${prefix}phone_verified`,
+    `${prefix}mobile`,
+    `${prefix}mobile_verified`,
+    `${prefix}email`,
+    `${prefix}email_verified`,
+    `${prefix}url`,
+    <include refid="ltd.qubit.commons.dao.mapper.insertColumnAddress">
+      <property name="prefix" value="${prefix}address_"/>
+    </include>
+    `${prefix}address_verified`,
+  </sql>
+</mapper>

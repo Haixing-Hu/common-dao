@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+  <settings>
+    <setting name="logImpl" value="org.apache.ibatis.logging.slf4j.Slf4jImpl"/>
+    <setting name="logPrefix" value=""/>
+    <setting name="cacheEnabled" value="true"/>
+    <setting name="defaultExecutorType" value="SIMPLE"/>
+    <setting name="defaultStatementTimeout" value="600"/>
+    <!-- It's very important to call setters on null column values -->
+    <setting name="callSettersOnNulls" value="true"/>
+    <setting name="jdbcTypeForNull" value="NULL"/>
+  </settings>
+
+  <typeHandlers>
+    <typeHandler javaType="java.lang.Enum"
+      handler="org.apache.ibatis.type.EnumTypeHandler"/>
+    <typeHandler javaType="java.util.Date"
+      handler="ltd.qubit.commons.sql.mybatis.UtcDateHandler"/>
+    <typeHandler javaType="java.time.Instant"
+      handler="ltd.qubit.commons.sql.mybatis.InstantHandler"/>
+    <typeHandler javaType="java.time.LocalDate"
+      handler="ltd.qubit.commons.sql.mybatis.LocalDateHandler"/>
+    <typeHandler javaType="java.time.LocalTime"
+      handler="ltd.qubit.commons.sql.mybatis.LocalTimeHandler"/>
+    <typeHandler javaType="java.time.LocalDateTime"
+      handler="ltd.qubit.commons.sql.mybatis.LocalDateTimeHandler"/>
+    <typeHandler javaType="java.time.Period"
+      handler="ltd.qubit.commons.sql.mybatis.PeriodHandler"/>
+    <typeHandler
+      handler="ltd.qubit.commons.sql.mybatis.StringArrayHandler"/>
+    <typeHandler javaType="ltd.qubit.commons.util.range.LocalTimeRangeList"
+      handler="ltd.qubit.commons.sql.mybatis.LocalTimeRangeListHandler"/>
+    <typeHandler javaType="ltd.qubit.commons.util.pair.KeyValuePairList"
+      handler="ltd.qubit.commons.sql.mybatis.KeyValuePairListHandler"/>
+    <typeHandler javaType="ltd.qubit.commons.datastructure.list.StringList"
+      handler="ltd.qubit.commons.sql.mybatis.StringListHandler"/>
+    <typeHandler javaType="ltd.qubit.model.contact.Phone"
+      handler="ltd.qubit.model.contact.PhoneHandler"/>
+  </typeHandlers>
+
+</configuration>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.mapper">
+
+  <sql id="selectColumnUpload">
+    ${uploadAlias}.`${columnPrefix}id`                  AS `${asPrefix}id`,
+    ${uploadAlias}.`${columnPrefix}original_filename`   AS `${asPrefix}original_filename`,
+    ${uploadAlias}.`${columnPrefix}type`                AS `${asPrefix}type`,
+    ${uploadAlias}.`${columnPrefix}create_time`         AS `${asPrefix}create_time`,
+    ${uploadAlias}.`${columnPrefix}delete_time`         AS `${asPrefix}delete_time`,
+    <include refid="ltd.qubit.commons.dao.mapper.selectColumnFileInfo">
+      <property name="alias"          value="${uploadAlias}"/>
+      <property name="columnPrefix"   value="${columnPrefix}file_"/>
+      <property name="asPrefix"       value="${asPrefix}file_"/>
+    </include>
+    <include refid="ltd.qubit.commons.dao.mapper.selectColumnFileInfo">
+      <property name="alias"          value="${uploadAlias}"/>
+      <property name="columnPrefix"   value="${columnPrefix}screenshot_"/>
+      <property name="asPrefix"       value="${asPrefix}screenshot_"/>
+    </include>
+    <include refid="ltd.qubit.commons.dao.mapper.selectColumnFileInfo">
+      <property name="alias"          value="${uploadAlias}"/>
+      <property name="columnPrefix"   value="${columnPrefix}small_thumbnail_"/>
+      <property name="asPrefix"       value="${asPrefix}small_thumbnail_"/>
+    </include>
+    <include refid="ltd.qubit.commons.dao.mapper.selectColumnFileInfo">
+      <property name="alias"          value="${uploadAlias}"/>
+      <property name="columnPrefix"   value="${columnPrefix}large_thumbnail_"/>
+      <property name="asPrefix"       value="${asPrefix}large_thumbnail_"/>
+    </include>
+  </sql>
+
+</mapper>

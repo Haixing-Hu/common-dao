@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.mapper">
+
+  <!--
+    按照要求限制返回的结果集。
+
+    SQL片段或Mapper参数
+    =========
+    limit:        返回的结果列表的长度
+    offset:       返回的第一个结果在所有结果列表中的偏移量，从0开始计数
+  -->
+  <sql id="limitOffset">
+    <if test="limit != null">
+      LIMIT #{limit}
+      <if test="offset != null">
+        OFFSET #{offset}
+      </if>
+    </if>
+    <if test="limit == null">
+      <if test="offset != null">
+        LIMIT 4294967295  <!-- 如果仅有offset参数没有limit参数，设置 LIMIT 为一个很大的数值 -->
+        OFFSET #{offset}
+      </if>
+    </if>
+  </sql>
+
+</mapper>

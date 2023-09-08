@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.mapper">
+
+  <!--
+    关联 person 表获取 PersonInfo 对象的字段，作为 guardian 属性
+
+    == 参数 ==
+    alias:                    主表的别名
+    guardianAlias:            guardian 属性关联的 person 表的别名
+    guardianCredentialAlias:  guardian.credential 关联的 credential 表的别名
+  -->
+  <sql id="joinGuardian">
+    LEFT JOIN `person`                  AS ${guardianAlias}
+        ON ${guardianAlias}.`id`        = ${alias}.`guardian_id`
+        <!-- FIXME: 是否应限制guardian未被删除? -->
+    <include refid="ltd.qubit.commons.dao.mapper.joinCredential">
+      <property name="alias"                    value="${guardianAlias}"/>
+      <property name="type"                     value="PERSON"/>
+      <property name="property"                 value="CREDENTIAL"/>
+      <property name="credentialAlias"          value="${guardianCredentialAlias}"/>
+    </include>
+  </sql>
+
+</mapper>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.mapper.HostMapper">
+
+  <resultMap id="HostResultMap" type="ltd.qubit.model.system.Host">
+    <id property="id"                   column="id"/>
+    <result property="provider"         column="provider"/>
+    <result property="udid"             column="udid"/>
+  </resultMap>
+
+  <sql id="selectHost">
+    SELECT  h.`id`                AS `id`,
+            h.`provider`          AS `provider`,
+            h.`udid`              AS `udid`
+    FROM `host` AS h
+  </sql>
+
+  <select id="count" parameterType="map"
+    resultType="long" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.count">
+      <property name="table"  value="host"/>
+      <property name="alias"  value="h"/>
+      <property name="sql"    value="selectHost"/>
+    </include>
+  </select>
+
+  <select id="list" parameterType="map"
+    resultMap="HostResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.list">
+      <property name="sql"    value="selectHost"/>
+      <property name="alias"  value="h"/>
+    </include>
+  </select>
+
+  <select id="exist" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.exist">
+      <property name="table" value="host"/>
+    </include>
+  </select>
+
+  <select id="existUdid" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.existUdid">
+      <property name="table" value="host"/>
+    </include>
+  </select>
+
+  <select id="get" parameterType="map"
+    resultMap="HostResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.get">
+      <property name="sql" value="selectHost"/>
+      <property name="alias" value="h"/>
+    </include>
+  </select>
+
+  <select id="getByUdid" parameterType="map"
+    resultMap="HostResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getByUdid">
+      <property name="sql" value="selectHost"/>
+      <property name="alias" value="h"/>
+    </include>
+  </select>
+
+  <insert id="add" parameterType="ltd.qubit.model.system.Host">
+    INSERT INTO `host` (
+        `id`,
+        `provider`,
+        `udid`
+    ) VALUES (
+        #{id},
+        #{provider},
+        #{udid}
+    )
+  </insert>
+
+  <sql id="updateHost">
+    UPDATE `host`
+    SET   `provider`      = #{provider},
+          `udid`          = #{udid}
+  </sql>
+
+  <update id="update" parameterType="ltd.qubit.model.system.Host">
+    <include refid="ltd.qubit.commons.dao.mapper.update">
+      <property name="sql" value="updateHost"/>
+    </include>
+  </update>
+
+  <update id="erase" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.erase">
+      <property name="table" value="host"/>
+    </include>
+  </update>
+
+  <delete id="clear">
+    <include refid="ltd.qubit.commons.dao.mapper.clear">
+      <property name="table" value="host"/>
+    </include>
+  </delete>
+</mapper>

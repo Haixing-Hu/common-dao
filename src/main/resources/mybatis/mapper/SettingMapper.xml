@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.mapper.SettingMapper">
+
+  <resultMap id="SettingResultMap" type="ltd.qubit.model.system.Setting">
+    <id property="name"                 column="name"/>
+    <result property="type"             column="type"/>
+    <result property="readonly"         column="readonly"/>
+    <result property="nullable"         column="nullable"/>
+    <result property="multiple"         column="multiple"/>
+    <result property="encrypted"        column="encrypted"/>
+    <result property="description"      column="description"/>
+    <result property="value"            column="value"/>
+    <result property="createTime"       column="create_time"/>
+    <result property="modifyTime"       column="modify_time"/>
+  </resultMap>
+
+  <sql id="selectSetting">
+    SELECT s.`name`         AS `name`,
+           s.`type`         AS `type`,
+           s.`readonly`     AS `readonly`,
+           s.`nullable`     AS `nullable`,
+           s.`multiple`     AS `multiple`,
+           s.`encrypted`    AS `encrypted`,
+           s.`description`  AS `description`,
+           s.`value`        AS `value`,
+           s.`create_time`  AS `create_time`,
+           s.`modify_time`  AS `modify_time`
+    FROM `setting` AS s
+  </sql>
+
+  <select id="count" parameterType="map"
+    resultType="long" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.count">
+      <property name="table"  value="setting"/>
+      <property name="alias"  value="s"/>
+      <property name="sql"    value="selectSetting"/>
+    </include>
+  </select>
+
+  <select id="list" parameterType="map"
+    resultMap="SettingResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.list">
+      <property name="sql"    value="selectSetting"/>
+      <property name="alias"  value="s"/>
+    </include>
+  </select>
+
+  <select id="existName" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.existName">
+      <property name="table" value="setting"/>
+    </include>
+  </select>
+
+  <select id="getByName" parameterType="map"
+    resultMap="SettingResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getByName">
+      <property name="sql" value="selectSetting"/>
+      <property name="alias" value="s"/>
+    </include>
+  </select>
+
+  <insert id="add" parameterType="ltd.qubit.model.system.Setting">
+    INSERT INTO `setting` (
+      `name`,
+      `type`,
+      `readonly`,
+      `nullable`,
+      `multiple`,
+      `encrypted`,
+      `description`,
+      `value`,
+      `create_time`
+    ) VALUES (
+      #{name},
+      #{type},
+      #{readonly},
+      #{nullable},
+      #{multiple},
+      #{encrypted},
+      #{description},
+      #{value},
+      #{createTime}
+   )
+  </insert>
+
+  <update id="updateByName" parameterType="ltd.qubit.model.system.Setting">
+    UPDATE `setting`
+    SET   `value`         = #{value},
+          `description`   = #{description},
+          `modify_time`   = #{modifyTime}
+    WHERE `name` = #{name}
+  </update>
+
+  <update id="updateValueByName" parameterType="map">
+    UPDATE `setting`
+    SET   `value`         = #{value},
+          `modify_time`   = #{modifyTime}
+    WHERE `name` = #{name}
+  </update>
+
+  <update id="updateTypeValueByName" parameterType="map">
+    UPDATE `setting`
+    SET   `type`          = #{type},
+          `value`         = #{value},
+          `modify_time`   = #{modifyTime}
+    WHERE `name` = #{name}
+  </update>
+
+  <delete id="eraseByName">
+    DELETE FROM `setting`
+    WHERE `name` = #{name}
+  </delete>
+
+  <delete id="clear">
+    DELETE FROM `setting`
+  </delete>
+
+</mapper>

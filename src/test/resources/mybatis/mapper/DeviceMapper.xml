@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.testbed.mapper.DeviceMapper">
+
+  <resultMap id="DeviceResultMap" type="ltd.qubit.model.device.Device">
+    <id property="id"                         column="id"/>
+    <result property="code"                   column="code"/>
+    <result property="name"                   column="name"/>
+    <result property="brand"                  column="brand"/>
+    <result property="model"                  column="model"/>
+    <result property="model"                  column="model"/>
+    <result property="version"                column="version"/>
+    <result property="manufacturer"           column="manufacturer"/>
+    <result property="description"            column="description"/>
+    <result property="osType"                 column="os_type"/>
+    <result property="osName"                 column="os_name"/>
+    <result property="osVersion"              column="os_version"/>
+    <result property="clientAppName"          column="client_app_name"/>
+    <result property="clientAppVersion"       column="client_app_version"/>
+    <result property="clientAppManufacturer"  column="client_app_manufacturer"/>
+    <result property="udid"                   column="udid"/>
+    <result property="macAddress"             column="mac_address"/>
+    <result property="ipAddress"              column="ip_address"/>
+    <result property="state"                  column="state"/>
+    <result property="comment"                column="comment"/>
+    <result property="registerTime"           column="register_time"/>
+    <result property="lastStartupTime"        column="last_startup_time"/>
+    <result property="lastHeartbeatTime"      column="last_heartbeat_time"/>
+    <result property="createTime"             column="create_time"/>
+    <result property="modifyTime"             column="modify_time"/>
+    <result property="deleteTime"             column="delete_time"/>
+    <association property="app"
+      javaType="ltd.qubit.commons.model.StatefulInfo"
+      resultMap="ltd.qubit.commons.dao.mapper.StatefulInfoResultMap"
+      columnPrefix="app_"/>
+    <association property="simCard"
+      javaType="ltd.qubit.model.device.SimCard"
+      resultMap="ltd.qubit.commons.dao.mapper.SimCardResultMap"
+      columnPrefix="sim_card_"/>
+    <association property="location"
+      javaType="ltd.qubit.model.contact.Location"
+      resultMap="ltd.qubit.commons.dao.mapper.LocationResultMap"
+      columnPrefix="location_"/>
+    <association property="deployAddress"
+      javaType="ltd.qubit.model.contact.Address"
+      resultMap="ltd.qubit.commons.dao.mapper.AddressResultMap"
+      columnPrefix="deploy_address_"/>
+    <association property="owner"
+      javaType="ltd.qubit.model.person.PersonInfo"
+      resultMap="ltd.qubit.commons.dao.mapper.PersonInfoResultMap"
+      columnPrefix="owner_"/>
+  </resultMap>
+
+  <sql id="selectDevice">
+    SELECT  d.`id`                          AS `id`,
+    d.`code`                        AS `code`,
+    d.`name`                        AS `name`,
+    <include refid="ltd.qubit.commons.dao.mapper.selectColumnStatefulInfo">
+      <property name="alias"          value="a"/>
+      <property name="columnPrefix"   value=""/>
+      <property name="asPrefix"       value="app_"/>
+    </include>
+    d.`brand`                       AS `brand`,
+    d.`model`                       AS `model`,
+    d.`version`                     AS `version`,
+    d.`manufacturer`                AS `manufacturer`,
+    d.`description`                 AS `description`,
+    d.`os_type`                     AS `os_type`,
+    d.`os_name`                     AS `os_name`,
+    d.`os_version`                  AS `os_version`,
+    d.`client_app_name`             AS `client_app_name`,
+    d.`client_app_version`          AS `client_app_version`,
+    d.`client_app_manufacturer`     AS `client_app_manufacturer`,
+    <include refid="ltd.qubit.commons.dao.mapper.selectColumnSimCard">
+      <property name="alias"          value="d"/>
+      <property name="columnPrefix"   value="sim_card_"/>
+      <property name="asPrefix"       value="sim_card_"/>
+      <property name="operatorAlias"  value="o"/>
+      <property name="countryAlias"   value="c"/>
+    </include>
+    <include refid="ltd.qubit.commons.dao.mapper.selectColumnLocation">
+      <property name="alias"          value="d"/>
+      <property name="columnPrefix"   value="location_"/>
+      <property name="asPrefix"       value="location_"/>
+    </include>
+    d.`udid`                        AS `udid`,
+    d.`mac_address`                 AS `mac_address`,
+    d.`ip_address`                  AS `ip_address`,
+    <include refid="ltd.qubit.commons.dao.mapper.selectColumnAddress">
+      <property name="alias"          value="d"/>
+      <property name="columnPrefix"   value="deploy_address_"/>
+      <property name="asPrefix"       value="deploy_address_"/>
+      <property name="countryAlias"   value="t"/>
+      <property name="provinceAlias"  value="v"/>
+      <property name="cityAlias"      value="y"/>
+      <property name="districtAlias"  value="r"/>
+      <property name="streetAlias"    value="s"/>
+    </include>
+    <include refid="ltd.qubit.commons.dao.mapper.selectColumnPersonInfo">
+      <property name="alias"                    value="p"/>
+      <property name="columnPrefix"             value=""/>
+      <property name="credentialAlias"          value="pc"/>
+      <property name="credentialColumnPrefix"   value=""/>
+      <property name="asPrefix"                 value="owner_"/>
+    </include>
+    d.`state`                       AS `state`,
+    d.`comment`                     AS `comment`,
+    d.`register_time`               AS `register_time`,
+    d.`last_startup_time`           AS `last_startup_time`,
+    d.`last_heartbeat_time`         AS `last_heartbeat_time`,
+    d.`create_time`                 AS `create_time`,
+    d.`modify_time`                 AS `modify_time`,
+    d.`delete_time`                 AS `delete_time`
+    FROM `device` AS d
+    LEFT JOIN `app` AS a ON a.`id` = d.`app_id`
+    LEFT JOIN `country` AS c ON c.`id` = d.`sim_card_country_id`
+    <include refid="ltd.qubit.commons.dao.mapper.joinPersonInfo">
+      <property name="alias"                  value="d"/>
+      <property name="joinColumn"             value="owner_id" />
+      <property name="personAlias"            value="p" />
+      <property name="personCredentialAlias"  value="pc"/>
+    </include>
+    <include refid="ltd.qubit.commons.dao.mapper.joinAddress">
+      <property name="alias"                  value="d"/>
+      <property name="columnPrefix"           value="deploy_address_"/>
+      <property name="countryAlias"           value="t"/>
+      <property name="provinceAlias"          value="v"/>
+      <property name="cityAlias"              value="y"/>
+      <property name="districtAlias"          value="r"/>
+      <property name="streetAlias"            value="s"/>
+    </include>
+  </sql>
+
+  <select id="count" parameterType="map"
+    resultType="long" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.count">
+      <property name="table"    value="device"/>
+      <property name="alias"    value="d"/>
+      <property name="sql"      value="selectDevice"/>
+    </include>
+  </select>
+
+  <select id="list" parameterType="map"
+    resultMap="DeviceResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.list">
+      <property name="sql"      value="selectDevice"/>
+      <property name="alias"    value="d"/>
+    </include>
+  </select>
+
+  <select id="exist" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.exist">
+      <property name="table"    value="device"/>
+    </include>
+  </select>
+
+  <select id="existNonDeleted" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.existNonDeleted">
+      <property name="table"    value="device"/>
+    </include>
+  </select>
+
+  <select id="existCode" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.existCode">
+      <property name="table"    value="device"/>
+    </include>
+  </select>
+
+  <select id="existUdid" parameterType="map"
+    resultType="boolean" resultSetType="FORWARD_ONLY">
+    SELECT EXISTS ( SELECT 1
+                    FROM `device`
+                    WHERE `udid` = #{udid}
+                    LIMIT 1 )
+  </select>
+
+  <select id="get" parameterType="map"
+    resultMap="DeviceResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.get">
+      <property name="sql"      value="selectDevice"/>
+      <property name="alias"    value="d"/>
+    </include>
+  </select>
+
+  <select id="getByCode" parameterType="map"
+    resultMap="DeviceResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getByCode">
+      <property name="sql"      value="selectDevice"/>
+      <property name="alias"    value="d"/>
+    </include>
+  </select>
+
+  <select id="getByUdid" parameterType="map"
+    resultMap="DeviceResultMap" resultSetType="FORWARD_ONLY">
+    <include refid="selectDevice"/>
+    WHERE d.`udid` = #{udid}
+    LIMIT 1
+  </select>
+
+  <select id="getInfo" parameterType="map"
+    resultMap="ltd.qubit.commons.dao.mapper.StatefulInfoResultMap"
+    resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getStatefulInfo">
+      <property name="table"    value="device"/>
+    </include>
+  </select>
+
+  <select id="getInfoByCode" parameterType="map"
+    resultMap="ltd.qubit.commons.dao.mapper.StatefulInfoResultMap"
+    resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getStatefulInfoByCode">
+      <property name="table"    value="device"/>
+    </include>
+  </select>
+
+  <select id="getIdByCode" parameterType="map"
+    resultType="Long" resultSetType="FORWARD_ONLY">
+    <include refid="ltd.qubit.commons.dao.mapper.getIdByCode">
+      <property name="table"    value="device"/>
+    </include>
+  </select>
+
+  <insert id="add" parameterType="ltd.qubit.model.device.Device">
+    INSERT INTO `device` (
+    `id`,
+    `code`,
+    `name`,
+    `app_id`,
+    `brand`,
+    `model`,
+    `version`,
+    `manufacturer`,
+    `description`,
+    `os_type`,
+    `os_name`,
+    `os_version`,
+    `client_app_name`,
+    `client_app_version`,
+    `client_app_manufacturer`,
+    <include refid="ltd.qubit.commons.dao.mapper.insertColumnSimCard">
+      <property name="prefix" value="sim_card_"/>
+    </include>
+    <include refid="ltd.qubit.commons.dao.mapper.insertColumnLocation">
+      <property name="prefix" value="location_"/>
+    </include>
+    `udid`,
+    `mac_address`,
+    `ip_address`,
+    `owner_id`,
+    <include refid="ltd.qubit.commons.dao.mapper.insertColumnAddress">
+      <property name="prefix" value="deploy_address_"/>
+    </include>
+    `state`,
+    `comment`,
+    `create_time`
+    ) VALUES (
+    #{id},
+    #{code},
+    #{name},
+    #{app.id},
+    #{brand},
+    #{model},
+    #{version},
+    #{manufacturer},
+    #{description},
+    #{osType},
+    #{osName},
+    #{osVersion},
+    #{clientAppName},
+    #{clientAppVersion},
+    #{clientAppManufacturer},
+    <include refid="ltd.qubit.commons.dao.mapper.insertValueSimCard">
+      <property name="prefix" value="simCard."/>
+    </include>
+    <include refid="ltd.qubit.commons.dao.mapper.insertValueLocation">
+      <property name="prefix" value="location."/>
+    </include>
+    #{udid},
+    #{macAddress},
+    #{ipAddress},
+    #{owner.id},
+    <include refid="ltd.qubit.commons.dao.mapper.insertValueAddress">
+      <property name="prefix" value="deployAddress."/>
+    </include>
+    #{state},
+    #{comment},
+    #{createTime}
+    )
+  </insert>
+
+  <sql id="updateDevice">
+    UPDATE `device`
+    SET   `name`                    = #{name},
+          `model`                   = #{model},
+          `brand`                   = #{brand},
+          `version`                 = #{version},
+          `manufacturer`            = #{manufacturer},
+          `description`             = #{description},
+          `os_type`                 = #{osType},
+          `os_name`                 = #{osName},
+          `os_version`              = #{osVersion},
+          `client_app_name`         = #{clientAppName},
+          `client_app_version`      = #{clientAppVersion},
+          `client_app_manufacturer` = #{clientAppManufacturer},
+          `modify_time`             = #{modifyTime}
+  </sql>
+
+  <update id="update" parameterType="ltd.qubit.model.device.Device">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeleted">
+      <property name="sql"          value="updateDevice"/>
+    </include>
+  </update>
+
+  <update id="updateByCode" parameterType="ltd.qubit.model.commons.App">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedByCode">
+      <property name="sql"          value="updateDevice"/>
+    </include>
+  </update>
+
+  <update id="updateByUdid" parameterType="ltd.qubit.model.device.Device">
+    <include refid="updateDevice" />
+    WHERE `udid` = #{udid}
+  </update>
+
+  <update id="updateDeployAddress" parameterType="map">
+    UPDATE `device`
+    SET <include refid="ltd.qubit.commons.dao.mapper.updateSetAddress">
+    <property name="columnPrefix"     value="deploy_address_"/>
+    <property name="propertyPrefix"   value="deployAddress."/>
+  </include>
+    `modify_time`     = #{modifyTime}
+    WHERE `id` = #{id}
+    AND `delete_time` IS NULL
+  </update>
+
+  <update id="updateSimCard" parameterType="map">
+    UPDATE `device`
+    SET <include refid="ltd.qubit.commons.dao.mapper.updateSetSimCard">
+    <property name="columnPrefix"     value="sim_card_"/>
+    <property name="propertyPrefix"   value="simCard."/>
+  </include>
+    `modify_time`     = #{modifyTime}
+    WHERE `id` = #{id}
+    AND `delete_time` IS NULL
+  </update>
+
+  <update id="updateState" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedState">
+      <property name="table"  value="device"/>
+    </include>
+  </update>
+
+  <update id="updateStateByCode" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedStateByCode">
+      <property name="table"  value="device"/>
+    </include>
+  </update>
+
+  <update id="updateComment" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedComment">
+      <property name="table"    value="device"/>
+    </include>
+  </update>
+
+  <update id="updateCommentByCode" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedCommentByCode">
+      <property name="table"    value="device"/>
+    </include>
+  </update>
+
+  <update id="updateLocation" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.updateNonDeletedLocation">
+      <property name="table"    value="device"/>
+    </include>
+  </update>
+
+  <update id="delete" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.delete">
+      <property name="table"    value="device"/>
+    </include>
+  </update>
+
+  <update id="restore" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.restore">
+      <property name="table"    value="device"/>
+    </include>
+  </update>
+
+  <delete id="purge" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.purge">
+      <property name="table"    value="device"/>
+    </include>
+  </delete>
+
+  <delete id="purgeAll">
+    <include refid="ltd.qubit.commons.dao.mapper.purgeAll">
+      <property name="table"    value="device"/>
+    </include>
+  </delete>
+
+  <update id="erase" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.erase">
+      <property name="table"    value="device"/>
+    </include>
+  </update>
+
+  <delete id="clear">
+    <include refid="ltd.qubit.commons.dao.mapper.clear">
+      <property name="table"    value="device"/>
+    </include>
+  </delete>
+
+  <update id="deleteByCode" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.deleteByCode">
+      <property name="table"    value="device"/>
+    </include>
+  </update>
+
+  <update id="restoreByCode" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.restoreByCode">
+      <property name="table"    value="device"/>
+    </include>
+  </update>
+
+  <delete id="purgeByCode" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.purgeByCode">
+      <property name="table"    value="device"/>
+    </include>
+  </delete>
+
+  <delete id="eraseByCode" parameterType="map">
+    <include refid="ltd.qubit.commons.dao.mapper.eraseByCode">
+      <property name="table"    value="device"/>
+    </include>
+  </delete>
+</mapper>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.mapper">
+
+  <sql id="selectColumnFileInfo">
+    ${alias}.`${columnPrefix}path`           AS `${asPrefix}path`,
+    ${alias}.`${columnPrefix}format`         AS `${asPrefix}format`,
+    ${alias}.`${columnPrefix}content_type`   AS `${asPrefix}content_type`,
+    ${alias}.`${columnPrefix}size`           AS `${asPrefix}size`,
+    ${alias}.`${columnPrefix}width`          AS `${asPrefix}width`,
+    ${alias}.`${columnPrefix}height`         AS `${asPrefix}height`,
+    ${alias}.`${columnPrefix}duration`       AS `${asPrefix}duration`,
+    ${alias}.`${columnPrefix}quality`        AS `${asPrefix}quality`,
+  </sql>
+</mapper>

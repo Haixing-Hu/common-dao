@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.mapper">
+
+  <resultMap id="AddressResultMap" type="ltd.qubit.model.contact.Address">
+    <result property="detail"               column="detail"/>
+    <result property="postalcode"           column="postalcode"/>
+    <association property="country"
+      javaType="ltd.qubit.commons.model.Info"
+      resultMap="ltd.qubit.commons.dao.mapper.InfoResultMap"
+      columnPrefix="country_"/>
+    <association property="province"
+      javaType="ltd.qubit.commons.model.Info"
+      resultMap="ltd.qubit.commons.dao.mapper.InfoResultMap"
+      columnPrefix="province_"/>
+    <association property="city"
+      javaType="ltd.qubit.commons.model.Info"
+      resultMap="ltd.qubit.commons.dao.mapper.InfoResultMap"
+      columnPrefix="city_"/>
+    <association property="district"
+      javaType="ltd.qubit.commons.model.Info"
+      resultMap="ltd.qubit.commons.dao.mapper.InfoResultMap"
+      columnPrefix="district_"/>
+    <association property="street"
+      javaType="ltd.qubit.commons.model.Info"
+      resultMap="ltd.qubit.commons.dao.mapper.InfoResultMap"
+      columnPrefix="street_"/>
+    <association property="location"
+      javaType="ltd.qubit.model.contact.Location"
+      resultMap="ltd.qubit.commons.dao.mapper.LocationResultMap"
+      columnPrefix="location_"/>
+  </resultMap>
+</mapper>

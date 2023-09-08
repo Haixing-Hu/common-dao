@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.mapper">
+
+  <sql id="updateSetPersonInfo">
+    `${columnPrefix}id`                 =   #{${propertyPrefix}id},
+    `${columnPrefix}name`               =   #{${propertyPrefix}name},
+    `${columnPrefix}username`           =   #{${propertyPrefix}username},
+    <include refid="ltd.qubit.commons.dao.mapper.updateSetCredentialInfo">
+      <property name="columnPrefix"   value="${columnPrefix}credential_"/>
+      <property name="propertyPrefix" value="${propertyPrefix}credential."/>
+    </include>
+    `${columnPrefix}gender`             =   #{${propertyPrefix}gender},
+    `${columnPrefix}birthday`           =   #{${propertyPrefix}birthday},
+    `${columnPrefix}contact_mobile`     =   #{${propertyPrefix}mobile},
+    `${columnPrefix}contact_email`      =   #{${propertyPrefix}email},
+  </sql>
+
+</mapper>

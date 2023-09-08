@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~
+  ~    Copyright (c) 2022 - 2023.
+  ~    Haixing Hu, Qubit Co. Ltd.
+  ~
+  ~    All rights reserved.
+  ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ltd.qubit.commons.dao.mapper">
+
+  <!--
+    关联 street, district, city, province, country 表获取联系方式 Contact 对象的字段
+
+    == 参数 ==
+    alias:            主表的别名
+    columnPrefix:     主表中表示 contact.address 的字段名的前缀
+    streetAlias:      关联的street表的别名
+    districtAlias:    关联的district表的别名
+    cityAlias:        关联的city表的别名
+    provinceAlias:    关联的province表的别名
+    countryAlias:     关联的country表的别名
+  -->
+  <sql id="joinContact">
+    <include refid="ltd.qubit.commons.dao.mapper.joinAddress">
+      <property name="alias"          value="${alias}"/>
+      <property name="columnPrefix"   value="${columnPrefix}address_"/>
+      <property name="countryAlias"   value="${countryAlias}"/>
+      <property name="provinceAlias"  value="${provinceAlias}"/>
+      <property name="cityAlias"      value="${cityAlias}"/>
+      <property name="districtAlias"  value="${districtAlias}"/>
+      <property name="streetAlias"    value="${streetAlias}"/>
+    </include>
+  </sql>
+</mapper>
