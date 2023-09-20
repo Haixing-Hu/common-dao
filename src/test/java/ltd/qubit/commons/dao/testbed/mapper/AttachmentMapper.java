@@ -16,8 +16,6 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.dao.DataAccessException;
 
 import ltd.qubit.commons.dao.mapper.BasicWithOwnerMapper;
-import ltd.qubit.commons.dao.mapper.StateUpdatableMapper;
-import ltd.qubit.commons.dao.mapper.VisibilityUpdatableMapper;
 import ltd.qubit.commons.dao.testbed.AttachmentDao;
 import ltd.qubit.commons.error.DataNotExistException;
 import ltd.qubit.commons.error.DuplicateKeyException;

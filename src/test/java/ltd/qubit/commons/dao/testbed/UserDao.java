@@ -12,19 +12,10 @@ import java.time.Instant;
 
 import javax.annotation.Nullable;
 
-import ltd.qubit.commons.dao.BasicStatefulDao;
-import ltd.qubit.commons.dao.CommentUpdatableDao;
-import ltd.qubit.commons.dao.EmailUpdatableDao;
-import ltd.qubit.commons.dao.GettableByEmailDao;
-import ltd.qubit.commons.dao.GettableByMobileDao;
-import ltd.qubit.commons.dao.GettableByUsernameDao;
-import ltd.qubit.commons.dao.MobileUpdatableDao;
-import ltd.qubit.commons.dao.PasswordUpdatableDao;
-import ltd.qubit.commons.dao.testbed.mapper.UserMapper;
-
 import org.springframework.dao.DataAccessException;
 
 import ltd.qubit.commons.annotation.Modified;
+import ltd.qubit.commons.dao.testbed.mapper.UserMapper;
 import ltd.qubit.commons.sql.Criterion;
 import ltd.qubit.commons.sql.SortRequest;
 import ltd.qubit.model.commons.AuthorizeRecord;

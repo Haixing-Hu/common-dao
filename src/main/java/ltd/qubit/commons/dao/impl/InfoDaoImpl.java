@@ -8,8 +8,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 package ltd.qubit.commons.dao.impl;
 
-import ltd.qubit.commons.dao.InfoDao;
-import ltd.qubit.commons.dao.mapper.InfoMapper;
 import ltd.qubit.commons.model.Info;
 
 public abstract class InfoDaoImpl<T extends Info> extends DaoImpl<T>

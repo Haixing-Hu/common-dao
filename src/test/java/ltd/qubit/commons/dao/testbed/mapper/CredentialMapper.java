@@ -17,8 +17,6 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.dao.DataAccessException;
 
 import ltd.qubit.commons.dao.mapper.BasicWithOwnerMapper;
-import ltd.qubit.commons.dao.mapper.ModifyTimeUpdatableMapper;
-import ltd.qubit.commons.dao.mapper.UpdatableByOwnerMapper;
 import ltd.qubit.commons.dao.testbed.CredentialDao;
 import ltd.qubit.commons.model.Identifiable;
 import ltd.qubit.commons.model.WithOwner;

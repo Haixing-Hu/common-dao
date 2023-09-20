@@ -13,8 +13,8 @@ import java.time.Instant;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.dao.DataAccessException;
 
-import ltd.qubit.commons.model.Deletable;
-import ltd.qubit.commons.model.Identifiable;
+import ltd.qubit.commons.model.util.Deletable;
+import ltd.qubit.commons.model.util.Identifiable;
 
 /**
  * This interface represents a MyBatis Mapper that implements mark deletion

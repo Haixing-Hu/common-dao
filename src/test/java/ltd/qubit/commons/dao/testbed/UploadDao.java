@@ -10,7 +10,6 @@ package ltd.qubit.commons.dao.testbed;
 
 import org.springframework.dao.DataAccessException;
 
-import ltd.qubit.commons.dao.BasicUnupdatableDao;
 import ltd.qubit.commons.dao.testbed.mapper.UploadMapper;
 import ltd.qubit.commons.error.DataNotExistException;
 import ltd.qubit.commons.model.Identifiable;

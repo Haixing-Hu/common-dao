@@ -13,14 +13,6 @@ import java.time.Instant;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.dao.DataAccessException;
 
-import ltd.qubit.commons.dao.mapper.BasicStatefulMapper;
-import ltd.qubit.commons.dao.mapper.CommentUpdatableMapper;
-import ltd.qubit.commons.dao.mapper.EmailUpdatableMapper;
-import ltd.qubit.commons.dao.mapper.GettableByEmailMapper;
-import ltd.qubit.commons.dao.mapper.GettableByMobileMapper;
-import ltd.qubit.commons.dao.mapper.GettableByUsernameMapper;
-import ltd.qubit.commons.dao.mapper.MobileUpdatableMapper;
-import ltd.qubit.commons.dao.mapper.PasswordUpdatableMapper;
 import ltd.qubit.commons.dao.testbed.UserDao;
 import ltd.qubit.commons.model.Identifiable;
 import ltd.qubit.commons.sql.Criterion;
@@ -65,9 +57,11 @@ import ltd.qubit.model.person.UserInfo;
  *
  * @author 胡海星
  */
-public interface UserMapper extends BasicStatefulMapper<User>, GettableByUsernameMapper<User>,
+public interface UserMapper extends GettableByUsernameMapper<User>,
     GettableByMobileMapper<User>, GettableByEmailMapper<User>, PasswordUpdatableMapper<User>,
-    MobileUpdatableMapper<User>, EmailUpdatableMapper<User>, CommentUpdatableMapper<User> {
+    MobileUpdatableMapper<User>, EmailUpdatableMapper<User>, CommentUpdatableMapper<User>,
+    ltd.qubit.commons.dao.mapper.BasicMapper<User>,
+    ltd.qubit.commons.dao.mapper.StateUpdatableMapper<User> {
 
   UserInfo getInfo(@Param("id") Long id) throws DataAccessException;
 

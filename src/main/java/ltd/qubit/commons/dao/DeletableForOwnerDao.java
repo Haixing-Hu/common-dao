@@ -11,11 +11,10 @@ package ltd.qubit.commons.dao;
 import org.springframework.dao.DataAccessException;
 
 import ltd.qubit.commons.annotation.Modified;
-import ltd.qubit.commons.dao.mapper.DeletableForOwnerMapper;
-import ltd.qubit.commons.model.Deletable;
-import ltd.qubit.commons.model.Identifiable;
-import ltd.qubit.commons.model.WithOwner;
-import ltd.qubit.model.commons.Owner;
+import ltd.qubit.commons.model.util.Deletable;
+import ltd.qubit.commons.model.util.Identifiable;
+import ltd.qubit.commons.model.util.Owner;
+import ltd.qubit.commons.model.util.WithOwner;
 
 import static ltd.qubit.commons.dao.DaoImplHelper.deleteForOwnerImpl;
 import static ltd.qubit.commons.dao.DaoImplHelper.purgeForOwnerImpl;

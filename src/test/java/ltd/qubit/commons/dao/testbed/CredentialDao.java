@@ -17,8 +17,6 @@ import org.springframework.dao.DataAccessException;
 
 import ltd.qubit.commons.annotation.Modified;
 import ltd.qubit.commons.annotation.NoAutoTest;
-import ltd.qubit.commons.dao.BasicWithOwnerDao;
-import ltd.qubit.commons.dao.UpdatableByOwnerDao;
 import ltd.qubit.commons.dao.testbed.mapper.CredentialMapper;
 import ltd.qubit.commons.error.DataNotExistException;
 import ltd.qubit.commons.error.DuplicateKeyException;

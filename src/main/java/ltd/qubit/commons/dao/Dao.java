@@ -10,8 +10,8 @@ package ltd.qubit.commons.dao;
 
 import ltd.qubit.commons.annotation.NoAutoTest;
 import ltd.qubit.commons.dao.mapper.Mapper;
-import ltd.qubit.commons.model.HasClock;
-import ltd.qubit.commons.model.HasLogger;
+import ltd.qubit.commons.model.util.HasClock;
+import ltd.qubit.commons.model.util.HasLogger;
 
 /**
  * The base interface for all DAO interfaces.

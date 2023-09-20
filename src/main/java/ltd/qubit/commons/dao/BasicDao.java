@@ -9,8 +9,8 @@
 package ltd.qubit.commons.dao;
 
 import ltd.qubit.commons.dao.mapper.BasicMapper;
-import ltd.qubit.commons.model.Deletable;
-import ltd.qubit.commons.model.Identifiable;
+import ltd.qubit.commons.model.util.Deletable;
+import ltd.qubit.commons.model.util.Identifiable;
 import ltd.qubit.commons.sql.Criterion;
 import ltd.qubit.commons.sql.SortRequest;
 

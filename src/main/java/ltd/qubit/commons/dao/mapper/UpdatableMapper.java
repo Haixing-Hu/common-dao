@@ -16,7 +16,7 @@ import ltd.qubit.commons.error.FieldValueOutOfRangeException;
 import ltd.qubit.commons.error.ForeignKeyConstraintFailException;
 import ltd.qubit.commons.error.InvalidFieldFormatException;
 import ltd.qubit.commons.error.NullFieldException;
-import ltd.qubit.commons.model.Identifiable;
+import ltd.qubit.commons.model.util.Identifiable;
 
 /**
  * This interface represents a MyBatis Mapper that implements the updating

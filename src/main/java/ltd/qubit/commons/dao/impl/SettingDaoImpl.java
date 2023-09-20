@@ -16,9 +16,6 @@ import java.time.LocalTime;
 
 import javax.annotation.Nullable;
 
-import ltd.qubit.commons.dao.SettingDao;
-import ltd.qubit.commons.dao.mapper.SettingMapper;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 
@@ -27,7 +24,6 @@ import ltd.qubit.model.system.Setting;
 
 import static ltd.qubit.commons.dao.DaoImplHelper.updateByKeyImpl;
 import static ltd.qubit.commons.dao.DaoImplHelper.updatePropertyByKeyImpl;
-
 import static ltd.qubit.commons.lang.ObjectUtils.defaultIfNull;
 
 public class SettingDaoImpl extends DaoImpl<Setting> implements SettingDao {

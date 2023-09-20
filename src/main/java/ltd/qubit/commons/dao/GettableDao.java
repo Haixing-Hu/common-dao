@@ -16,7 +16,7 @@ import org.springframework.dao.DataAccessException;
 
 import ltd.qubit.commons.dao.mapper.GettableMapper;
 import ltd.qubit.commons.error.DataNotExistException;
-import ltd.qubit.commons.model.Identifiable;
+import ltd.qubit.commons.model.util.Identifiable;
 
 import static ltd.qubit.commons.dao.DaoImplHelper.existKeyImpl;
 import static ltd.qubit.commons.dao.DaoImplHelper.getByKeyImpl;

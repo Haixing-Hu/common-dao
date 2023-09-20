@@ -10,7 +10,6 @@ package ltd.qubit.commons.dao.testbed.mapper;
 
 import java.time.Instant;
 
-import ltd.qubit.commons.dao.mapper.BasicHasInfoWithEntityByCodeByEntityNameMapper;
 import ltd.qubit.commons.dao.testbed.CategoryDao;
 import ltd.qubit.commons.model.Identifiable;
 import ltd.qubit.commons.model.InfoWithEntity;
@@ -59,6 +58,9 @@ import ltd.qubit.model.commons.Category;
  * @author 胡海星
  */
 public interface CategoryMapper extends
-    BasicHasInfoWithEntityByCodeByEntityNameMapper<Category> {
+    ltd.qubit.commons.dao.mapper.BasicByCodeByEntityNameMapper<Category>,
+    ltd.qubit.commons.dao.mapper.InfoWithEntityGettableMapper<Category>,
+    ltd.qubit.commons.dao.mapper.InfoWithEntityGettableByCodeMapper<Category>,
+    ltd.qubit.commons.dao.mapper.InfoWithEntityGettableByEntityNameMapper<Category> {
   //  empty
 }

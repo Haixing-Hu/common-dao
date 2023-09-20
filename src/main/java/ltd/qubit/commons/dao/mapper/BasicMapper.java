@@ -10,8 +10,8 @@ package ltd.qubit.commons.dao.mapper;
 
 import java.time.Instant;
 
-import ltd.qubit.commons.model.Deletable;
-import ltd.qubit.commons.model.Identifiable;
+import ltd.qubit.commons.model.util.Deletable;
+import ltd.qubit.commons.model.util.Identifiable;
 import ltd.qubit.commons.sql.Criterion;
 import ltd.qubit.commons.sql.SortRequest;
 

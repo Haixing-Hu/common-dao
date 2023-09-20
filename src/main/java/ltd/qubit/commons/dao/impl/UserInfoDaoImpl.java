@@ -8,9 +8,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 package ltd.qubit.commons.dao.impl;
 
-import ltd.qubit.commons.dao.UserInfoDao;
-import ltd.qubit.commons.dao.mapper.UserInfoMapper;
-
 import org.springframework.beans.factory.annotation.Autowired;
 
 import ltd.qubit.model.person.UserInfo;

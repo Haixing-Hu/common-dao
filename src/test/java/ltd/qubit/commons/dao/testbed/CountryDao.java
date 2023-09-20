@@ -8,7 +8,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 package ltd.qubit.commons.dao.testbed;
 
-import ltd.qubit.commons.dao.BasicHasInfoByCodeByNameDao;
 import ltd.qubit.commons.dao.testbed.mapper.CountryMapper;
 import ltd.qubit.commons.model.Identifiable;
 import ltd.qubit.commons.model.WithCode;

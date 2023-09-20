@@ -8,9 +8,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 package ltd.qubit.commons.dao.testbed.mapper;
 
-import ltd.qubit.commons.dao.mapper.BasicHasInfoByCodeMapper;
 import ltd.qubit.commons.dao.testbed.SourceDao;
-
 import ltd.qubit.model.commons.Source;
 
 /**
@@ -18,7 +16,10 @@ import ltd.qubit.model.commons.Source;
  *
  * @author 胡海星
  */
-public interface SourceMapper extends BasicHasInfoByCodeMapper<Source> {
+public interface SourceMapper extends
+    ltd.qubit.commons.dao.mapper.BasicByCodeMapper<Source>,
+    ltd.qubit.commons.dao.mapper.InfoGettableMapper<Source>,
+    ltd.qubit.commons.dao.mapper.InfoGettableByCodeMapper<Source> {
 
   //  empty
 }

@@ -10,17 +10,10 @@ package ltd.qubit.commons.dao.testbed.mapper;
 
 import java.time.Instant;
 
-import ltd.qubit.commons.dao.mapper.BasicHasStatefulInfoByCodeByNameMapper;
-import ltd.qubit.commons.dao.mapper.CommentUpdatableByCodeMapper;
-import ltd.qubit.commons.dao.mapper.CommentUpdatableMapper;
-import ltd.qubit.commons.dao.mapper.ContactGettableMapper;
-import ltd.qubit.commons.dao.mapper.ContactUpdatableByCodeMapper;
-import ltd.qubit.commons.dao.mapper.ContactUpdatableMapper;
-import ltd.qubit.commons.dao.testbed.OrganizationDao;
-
 import org.apache.ibatis.annotations.Param;
 import org.springframework.dao.DataAccessException;
 
+import ltd.qubit.commons.dao.testbed.OrganizationDao;
 import ltd.qubit.model.organization.Organization;
 import ltd.qubit.model.person.PersonInfo;
 
@@ -29,12 +22,19 @@ import ltd.qubit.model.person.PersonInfo;
  *
  * @author 胡海星
  */
-public interface OrganizationMapper extends
-    BasicHasStatefulInfoByCodeByNameMapper<Organization>,
-    CommentUpdatableMapper<Organization>,
+public interface OrganizationMapper extends CommentUpdatableMapper<Organization>,
     CommentUpdatableByCodeMapper<Organization>,
     ContactGettableMapper<Organization>, ContactUpdatableMapper<Organization>,
-    ContactUpdatableByCodeMapper<Organization> {
+    ContactUpdatableByCodeMapper<Organization>, ltd.qubit.commons.dao.mapper.StatefulInfoGettableMapper<Organization>,
+    ltd.qubit.commons.dao.mapper.StatefulInfoGettableByCodeMapper<Organization>,
+    ltd.qubit.commons.dao.mapper.StatefulInfoGettableByNameMapper<Organization>,
+    ltd.qubit.commons.dao.mapper.BasicStatefulByCodeMapper<Organization>, ltd.qubit.commons.dao.mapper.StateUpdatableByNameMapper<Organization>,
+    ltd.qubit.commons.dao.mapper.DeletableByNameMapper<Organization>,
+    ltd.qubit.commons.dao.mapper.ErasableByNameMapper<Organization>,
+    ltd.qubit.commons.dao.mapper.ListableMapper<Organization>,
+    GettableByNameMapper<T>,
+    ltd.qubit.commons.dao.mapper.AddableMapper<Organization>,
+    ltd.qubit.commons.dao.mapper.UpdatableByNameMapper<Organization> {
 
   long updatePrincipal(@Param("id") Long id,
       @Param("principal") PersonInfo principal,

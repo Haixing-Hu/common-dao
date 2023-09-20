@@ -15,8 +15,8 @@ import org.springframework.dao.DataAccessException;
 import ltd.qubit.commons.annotation.Modified;
 import ltd.qubit.commons.dao.mapper.DeletableMapper;
 import ltd.qubit.commons.error.DataNotExistException;
-import ltd.qubit.commons.model.Deletable;
-import ltd.qubit.commons.model.Identifiable;
+import ltd.qubit.commons.model.util.Deletable;
+import ltd.qubit.commons.model.util.Identifiable;
 
 import static ltd.qubit.commons.dao.DaoImplHelper.deleteByKeyImpl;
 import static ltd.qubit.commons.dao.DaoImplHelper.existNonDeletedKeyImpl;

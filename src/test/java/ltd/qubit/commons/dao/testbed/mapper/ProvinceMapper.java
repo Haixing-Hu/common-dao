@@ -10,7 +10,6 @@ package ltd.qubit.commons.dao.testbed.mapper;
 
 import java.time.Instant;
 
-import ltd.qubit.commons.dao.mapper.BasicHasInfoByCodeMapper;
 import ltd.qubit.commons.dao.testbed.ProvinceDao;
 import ltd.qubit.commons.model.Identifiable;
 import ltd.qubit.commons.model.WithCode;
@@ -48,6 +47,9 @@ import ltd.qubit.model.contact.Province;
  *
  * @author 胡海星
  */
-public interface ProvinceMapper extends BasicHasInfoByCodeMapper<Province> {
+public interface ProvinceMapper extends
+    ltd.qubit.commons.dao.mapper.BasicByCodeMapper<Province>,
+    ltd.qubit.commons.dao.mapper.InfoGettableMapper<Province>,
+    ltd.qubit.commons.dao.mapper.InfoGettableByCodeMapper<Province> {
   //  empty
 }

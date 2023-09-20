@@ -13,9 +13,6 @@ import java.time.Instant;
 import org.springframework.dao.DataAccessException;
 
 import ltd.qubit.commons.annotation.Modified;
-import ltd.qubit.commons.dao.BasicHasStatefulInfoByCodeDao;
-import ltd.qubit.commons.dao.CommentUpdatableDao;
-import ltd.qubit.commons.dao.LocationUpdatableDao;
 import ltd.qubit.commons.dao.testbed.mapper.DeviceMapper;
 import ltd.qubit.commons.model.StatefulInfo;
 import ltd.qubit.commons.model.WithCode;

@@ -10,13 +10,12 @@ package ltd.qubit.commons.dao.impl;
 
 import java.time.Clock;
 
-import ltd.qubit.commons.dao.Dao;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import ltd.qubit.id.IdGenerator;
+import ltd.qubit.commons.dao.Dao;
+import ltd.qubit.commons.id.IdGenerator;
 
 /**
  * 实现所有DAO接口的基类。

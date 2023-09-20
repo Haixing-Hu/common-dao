@@ -10,24 +10,10 @@ package ltd.qubit.commons.dao.testbed;
 
 import java.time.Instant;
 
-import ltd.qubit.commons.dao.BasicHasStatefulInfoByCodeDao;
-import ltd.qubit.commons.dao.CommentUpdatableByCodeDao;
-import ltd.qubit.commons.dao.CommentUpdatableDao;
-import ltd.qubit.commons.dao.OrganizationUpdatableByCodeDao;
-import ltd.qubit.commons.dao.OrganizationUpdatableDao;
-import ltd.qubit.commons.dao.SecurityKeyGettableByCodeDao;
-import ltd.qubit.commons.dao.SecurityKeyGettableDao;
-import ltd.qubit.commons.dao.SecurityKeyUpdatableByCodeDao;
-import ltd.qubit.commons.dao.SecurityKeyUpdatableDao;
-import ltd.qubit.commons.dao.TokenGettableByCodeDao;
-import ltd.qubit.commons.dao.TokenGettableDao;
-import ltd.qubit.commons.dao.TokenUpdatableByCodeDao;
-import ltd.qubit.commons.dao.TokenUpdatableDao;
-import ltd.qubit.commons.dao.testbed.mapper.AppMapper;
-
 import org.springframework.dao.DataAccessException;
 
 import ltd.qubit.commons.annotation.Modified;
+import ltd.qubit.commons.dao.testbed.mapper.AppMapper;
 import ltd.qubit.model.commons.App;
 import ltd.qubit.model.commons.AuthorizeRecord;
 

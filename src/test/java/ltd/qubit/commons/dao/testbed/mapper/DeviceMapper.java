@@ -15,9 +15,6 @@ import javax.annotation.Nullable;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.dao.DataAccessException;
 
-import ltd.qubit.commons.dao.mapper.BasicHasStatefulInfoByCodeMapper;
-import ltd.qubit.commons.dao.mapper.CommentUpdatableMapper;
-import ltd.qubit.commons.dao.mapper.LocationUpdatableMapper;
 import ltd.qubit.commons.dao.testbed.DeviceDao;
 import ltd.qubit.commons.model.Identifiable;
 import ltd.qubit.commons.model.StatefulInfo;
@@ -61,8 +58,16 @@ import ltd.qubit.model.device.SimCard;
  *
  * @author 胡海星
  */
-public interface DeviceMapper extends BasicHasStatefulInfoByCodeMapper<Device>,
-    CommentUpdatableMapper<Device>, LocationUpdatableMapper<Device> {
+public interface DeviceMapper extends CommentUpdatableMapper<Device>, LocationUpdatableMapper<Device>,
+    ltd.qubit.commons.dao.mapper.StatefulInfoGettableMapper<Device>,
+    ltd.qubit.commons.dao.mapper.StatefulInfoGettableByCodeMapper<Device>,
+    ltd.qubit.commons.dao.mapper.StateUpdatableMapper<Device>,
+    ltd.qubit.commons.dao.mapper.StateUpdatableByCodeMapper<Device>,
+    ltd.qubit.commons.dao.mapper.BasicMapper<Device>, ltd.qubit.commons.dao.mapper.DeletableByCodeMapper<Device>,
+    ltd.qubit.commons.dao.mapper.ErasableByCodeMapper<Device>,
+    ltd.qubit.commons.dao.mapper.ListableMapper<Device>,
+    GettableByCodeMapper<T>, ltd.qubit.commons.dao.mapper.AddableMapper<Device>,
+    ltd.qubit.commons.dao.mapper.UpdatableByCodeMapper<Device> {
 
   /**
    * 判定拥有指定UDID的设备是否存在。

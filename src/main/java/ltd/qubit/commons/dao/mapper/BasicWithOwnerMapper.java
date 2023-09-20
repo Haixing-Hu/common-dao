@@ -10,12 +10,12 @@ package ltd.qubit.commons.dao.mapper;
 
 import java.time.Instant;
 
-import ltd.qubit.commons.model.Auditable;
-import ltd.qubit.commons.model.Identifiable;
-import ltd.qubit.commons.model.WithOwner;
+import ltd.qubit.commons.model.util.Auditable;
+import ltd.qubit.commons.model.util.Identifiable;
+import ltd.qubit.commons.model.util.Owner;
+import ltd.qubit.commons.model.util.WithOwner;
 import ltd.qubit.commons.sql.Criterion;
 import ltd.qubit.commons.sql.SortRequest;
-import ltd.qubit.model.commons.Owner;
 
 /**
  * 此接口表示实现了对实体类进行列表、查询、查询基本信息、添加、更新、标记删除、恢复删除、

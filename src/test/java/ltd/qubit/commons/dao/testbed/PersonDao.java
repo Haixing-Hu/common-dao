@@ -10,17 +10,12 @@ package ltd.qubit.commons.dao.testbed;
 
 import java.time.Instant;
 
-import ltd.qubit.commons.dao.BasicDao;
-import ltd.qubit.commons.dao.CommentUpdatableDao;
-import ltd.qubit.commons.dao.ContactGettableDao;
-import ltd.qubit.commons.dao.ContactUpdatableDao;
-import ltd.qubit.commons.dao.GettableByCredentialDao;
-import ltd.qubit.commons.dao.testbed.mapper.PersonMapper;
-
 import org.springframework.dao.DataAccessException;
 
 import ltd.qubit.commons.annotation.Modified;
 import ltd.qubit.commons.annotation.Unmodified;
+import ltd.qubit.commons.dao.BasicDao;
+import ltd.qubit.commons.dao.testbed.mapper.PersonMapper;
 import ltd.qubit.commons.sql.Criterion;
 import ltd.qubit.commons.sql.SortRequest;
 import ltd.qubit.model.commons.CredentialInfo;

@@ -13,7 +13,7 @@ import javax.annotation.Nullable;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.dao.DataAccessException;
 
-import ltd.qubit.commons.model.Identifiable;
+import ltd.qubit.commons.model.util.Identifiable;
 
 /**
  * This interface represents a MyBatis Mapper that implements query operations

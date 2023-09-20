@@ -8,7 +8,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 package ltd.qubit.commons.dao.testbed;
 
-import ltd.qubit.commons.dao.BasicHasInfoWithEntityByCodeByEntityNameDao;
 import ltd.qubit.commons.dao.testbed.mapper.CategoryMapper;
 import ltd.qubit.commons.model.Identifiable;
 import ltd.qubit.commons.model.InfoWithEntity;

@@ -10,7 +10,6 @@ package ltd.qubit.commons.dao.testbed.mapper;
 
 import java.time.Instant;
 
-import ltd.qubit.commons.dao.mapper.BasicHasInfoByCodeMapper;
 import ltd.qubit.commons.dao.testbed.DistrictDao;
 import ltd.qubit.commons.model.Identifiable;
 import ltd.qubit.commons.model.WithCode;
@@ -48,6 +47,9 @@ import ltd.qubit.model.contact.District;
  *
  * @author 胡海星
  */
-public interface DistrictMapper extends BasicHasInfoByCodeMapper<District> {
+public interface DistrictMapper extends
+    ltd.qubit.commons.dao.mapper.BasicByCodeMapper<District>,
+    ltd.qubit.commons.dao.mapper.InfoGettableMapper<District>,
+    ltd.qubit.commons.dao.mapper.InfoGettableByCodeMapper<District> {
   //  empty
 }

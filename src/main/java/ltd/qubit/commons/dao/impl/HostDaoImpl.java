@@ -10,9 +10,6 @@ package ltd.qubit.commons.dao.impl;
 
 import javax.annotation.Nullable;
 
-import ltd.qubit.commons.dao.HostDao;
-import ltd.qubit.commons.dao.mapper.HostMapper;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 
